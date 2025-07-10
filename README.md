@@ -22,37 +22,47 @@ First, you need to install the `AdonisJS`. If you have already installed it, you
 npm init adonisjs@latest hello-world
 ```
 
-Follow the prompts to complete the installation and add the EaseAdmin extension package to adonisjs
+Follow the prompts to complete the installation.
+
+> It is recommended to choose sqlite as the development environment database
+
+Add the EaseAdmin extension package to AdonisJS
 
 ```
 node ace add @easeadmin/core
 ```
 
-Publish the front-end files (normally, you don’t need to publish manually because the add command has been automatically published. You only need to publish manually to update the front-end files after the version is updated)
+### Publish the static files.
+
+normally, you don’t need to publish manually because the add command has been automatically published.
 
 ```
 node ace configure @easeadmin/core
 ```
 
-Create your admin program. By default it is `admin`,you can also pass on other names like: `node ace admin:create tenant`
+### Create your admin program
+
+By default it is `admin` you can also pass on other names like: `node ace admin:create tenant` create multiple admin program
 
 ```
 node ace admin:create
 ```
 
-Create database and superadmin user
+### Create database and superadmin user
+
+login with `admin/admin`
 
 ```
 node ace migration:run
 node ace db:seed
 ```
 
-# Starting the development server
+### Starting the development server
 
-you may start the development server by running the node ace serve command.
+You may start the development server by running the node ace serve command.
+
+> visit `http://localhost:3333/admin/home` to view your application in browser
 
 ```
 node ace serve
 ```
-
-Once the development server runs, you may visit `http://localhost:3333/admin/home` to view your application in a browser and login with `admin/admin`

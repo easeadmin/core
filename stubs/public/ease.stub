@@ -190,7 +190,7 @@ const ease = new (function () {
       env.theme = nowTheme(settings.theme ?? theme, settings.darkness)
     } else {
       let theme = env.theme ?? 'cxd'
-      props.locale = window.navigator.languages.shift()
+      props.locale = window.navigator.languages[0]
       if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
         theme = 'dark'
       }
