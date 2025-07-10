@@ -1,0 +1,31 @@
+{{{
+  exports({ to: app.seedersPath('admin_user.ts') })
+}}}
+import { BaseSeeder } from '@adonisjs/lucid/seeders'
+import hash from '@adonisjs/core/services/hash'
+import db from '@adonisjs/lucid/services/db'
+import config from '#config/{{name}}'
+
+// add default admin user
+export default class extends BaseSeeder {
+  async run() {
+    let password = await hash.use('scrypt').make('admin')
+    await db.transaction(async (trx) => {
+      await trx.table(config.database.user_table).insert({
+        username: 'admin',
+        nickname: 'admin',
+        password: password,
+      })
+
+      await trx.table(config.database.role_table).insert({
+        name: 'admin',
+        slug: 'administrator',
+      })
+
+      await trx.table(config.database.user_role_table).insert({
+        user_id: 1,
+        role_id: 1,
+      })
+    })
+  }
+}

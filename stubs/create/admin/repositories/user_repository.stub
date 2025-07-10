@@ -1,0 +1,9 @@
+{{{
+    exports({ to: app.makePath(`app/${name}/repositories/user_repository.ts`) })
+}}}
+import Repository from '@easeadmin/core/extends/repository'
+import User from '#models/user'
+
+export default class UserRepository extends Repository {
+  protected model = User
+}
