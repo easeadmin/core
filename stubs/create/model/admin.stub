@@ -124,6 +124,9 @@ export class Menu extends BaseModel {
   declare order: number
 
   @column()
+  declare hidden: number
+
+  @column()
   declare parentId: number
 
   @column.dateTime({ autoCreate: true })
@@ -159,10 +162,7 @@ export class Permission extends BaseModel {
   declare slug: string
 
   @column()
-  declare httpPath: string
-
-  @column()
-  declare httpMethod: string
+  declare order: number
 
   @column()
   declare parentId: number
