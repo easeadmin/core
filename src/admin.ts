@@ -27,18 +27,30 @@ export default class Admin {
     }
   }
 
+  /**
+   * get current controller name prefix
+   */
   get current() {
     return this.lang
   }
 
+  /**
+   * get admin version
+   */
   get version() {
     return this.adminVersion
   }
 
+  /**
+   * get admin config
+   */
   get config(): AdminConfig {
     return app.config.get(this.name)
   }
 
+  /**
+   * get locale language file name
+   */
   get locale() {
     if ('i18n' in this.ctx) {
       return (this.ctx.i18n as any).locale
@@ -46,22 +58,34 @@ export default class Admin {
     return 'en'
   }
 
+  /**
+   * get admin router prefix
+   */
   get asname() {
     return this.name
   }
 
+  /**
+   * get current user lucidRow
+   */
   get user() {
     if ('auth' in this.ctx) {
       return (this.ctx as any).auth.use(this.name)?.user
     }
   }
 
+  /**
+   * get current user json
+   */
   get userinfo() {
     if ('auth' in this.ctx) {
       return this.user?.toJSON()
     }
   }
 
+  /**
+   * admin i18n helper
+   */
   t(key: string, data?: Record<string, any>, fallback?: string): string {
     if (!fallback) {
       fallback = string.sentenceCase(key)
@@ -79,6 +103,9 @@ export default class Admin {
     return fallback
   }
 
+  /**
+   * make admin api
+   */
   api(
     url: string = '',
     action: 'ajax' | 'schema' | 'force' | 'restore' | 'export' = 'ajax',
@@ -91,10 +118,7 @@ export default class Admin {
     } else if (url.indexOf('?') === 0) {
       url = this.url + url
     }
-    let headers: Record<string, string> = {}
-    if (action !== 'ajax') {
-      headers['x-action'] = action
-    }
+    let headers: Record<string, string> = { 'x-action': action }
     if (method !== 'get') {
       let csrfToken = 'csrfToken' in this.ctx.request ? (this.ctx.request.csrfToken as string) : ''
       headers['x-csrf-token'] = csrfToken
@@ -106,10 +130,16 @@ export default class Admin {
     return api
   }
 
+  /**
+   * get admin model by name
+   */
   model(name: string): LucidModel {
     return this.models[name]
   }
 
+  /**
+   * admin router builder helper
+   */
   route(name: string, options?: { qs?: Record<string, any>; params?: Record<string, any> }) {
     let builder = router.builder()
     if (options) {
@@ -123,10 +153,52 @@ export default class Admin {
     return builder.make(`${this.asname}.${name}`)
   }
 
+  /**
+   * make tree by parentId
+   */
+  makeTrees(items: any[]) {
+    let trees: any[] = []
+    let flats: Record<string, any> = {}
+    items.forEach((item) => {
+      flats[item.id] = { ...item, children: [] }
+    })
+
+    items.forEach((item) => {
+      if (item.parentId === 0) {
+        trees.push(flats[item.id])
+      } else {
+        let parent = flats[item.parentId]
+        parent.children.push(flats[item.id])
+      }
+    })
+
+    return trees
+  }
+
+  /**
+   * make admin route identifier
+   */
   identifier(name: string) {
     return `${this.asname}.${name}`
   }
 
+  /**
+   * check current route is except
+   */
+  isExcept(): boolean {
+    const excepts = [`${this.name}.auth_login`].concat(this.config.auth.excepts)
+    let now = this.ctx.route?.name ?? ''
+    for (let item of excepts) {
+      if (now.indexOf(item) === 0) {
+        return true
+      }
+    }
+    return false
+  }
+
+  /**
+   * admin user authenticate
+   */
   async authenticate() {
     if (this.config.auth.guard.length > 0) {
       const ctx = this.ctx as any
@@ -142,6 +214,9 @@ export default class Admin {
     }
   }
 
+  /**
+   * admin current request permission
+   */
   async permission() {
     if (this.config.auth.permission) {
       if (!this.isExcept()) {
@@ -151,17 +226,9 @@ export default class Admin {
     }
   }
 
-  isExcept(): boolean {
-    const excepts = [
-      `${this.name}.auth_login.index`,
-      `${this.name}.auth_login.store`,
-      `${this.name}.auth_login.create`,
-      `${this.name}.auth_login.update`,
-      `${this.name}.auth_login.destroy`,
-    ].concat(this.config.auth.excepts)
-    return excepts.includes(this.ctx.route?.name ?? '')
-  }
-
+  /**
+   * get current user roles
+   */
   async getRoles() {
     if (!this.user.roles) {
       await this.user.load('roles')
@@ -169,6 +236,9 @@ export default class Admin {
     return this.user.roles
   }
 
+  /**
+   * get current user menus
+   */
   async getMenus() {
     let menus: any[] = []
     let roles = await this.getRoles()
@@ -178,9 +248,13 @@ export default class Admin {
       }
       menus = menus.concat(role.menus)
     }
+    menus.sort((a, b) => a.order - b.order)
     return menus
   }
 
+  /**
+   * get current user permissions
+   */
   async getPermissions() {
     let permissions: any[] = []
     let roles = await this.getRoles()
@@ -193,6 +267,9 @@ export default class Admin {
     return permissions
   }
 
+  /**
+   * check current user is a role
+   */
   async isRole(slug: string) {
     let roles = await this.getRoles()
     for (let role of roles) {
@@ -203,6 +280,9 @@ export default class Admin {
     return false
   }
 
+  /**
+   * check current user is roles
+   */
   async isAllRoles(slugs: string[]) {
     for (let value of slugs) {
       if (!(await this.isRole(value))) {
@@ -212,6 +292,9 @@ export default class Admin {
     return true
   }
 
+  /**
+   * check current user has role
+   */
   async isAnyRoles(slugs: string[]) {
     for (let slug of slugs) {
       if (await this.isRole(slug)) {
@@ -221,6 +304,9 @@ export default class Admin {
     return false
   }
 
+  /**
+   * check current user is administrator
+   */
   async isAdministrator() {
     if (this.user.id === 1) {
       return true
@@ -228,6 +314,9 @@ export default class Admin {
     return await this.isRole('administrator')
   }
 
+  /**
+   * check permission
+   */
   async can(slug?: string) {
     if (slug) {
       if (await this.isAdministrator()) {

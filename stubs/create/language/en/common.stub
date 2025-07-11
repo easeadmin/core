@@ -26,8 +26,13 @@
     "logout_success": "Logout success",
     "main": "Main",
     "menu": "Menu",
+    "yes": "Yes",
+    "no": "No",
+    "menu_icon": "Menu icon",
     "menu_name": "Menu name",
     "menu_slug": "Menu slug",
+    "menu_hidden": "Menu hidden",
+    "menu_parent": "Menu parent",
     "new_password": "New password",
     "nickname": "Nickname",
     "old_password": "Old password",
@@ -49,5 +54,6 @@
     "title": "Title",
     "updated_at": "Updated at",
     "user": "User",
-    "username": "Username"
+    "username": "Username",
+    "fontawesome_name": "Support fontawesome name",
 }

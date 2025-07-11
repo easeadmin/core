@@ -32,22 +32,84 @@ export default class RoleController extends Resource {
         .permission(isEdit),
       amis('input_text').name('name').label(this.ctx.admin.t('role_name')),
       amis('input_text').name('slug').label(this.ctx.admin.t('role_slug')),
-      amis('select')
+      amis('input_tree')
+        .cascade(true)
+        .multiple(true)
+        .searchable(true)
+        .joinValues(false)
+        .showIcon(false)
+        .enableDefaultIcon(false)
+        .treeContainerClassName('h-80')
         .name('menus')
         .label(this.ctx.admin.t('menu'))
-        .multiple(true)
-        .joinValues(false)
-        .valueField('id')
-        .labelField('name')
         .source(this.ctx.admin.api(this.ctx.admin.route('auth_menu.index'), 'export')),
-      amis('select')
+      amis('input_tree')
+        .cascade(true)
+        .multiple(true)
+        .searchable(true)
+        .joinValues(false)
+        .showIcon(false)
+        .enableDefaultIcon(false)
+        .treeContainerClassName('h-80')
         .name('permissions')
         .label(this.ctx.admin.t('permission'))
-        .multiple(true)
-        .joinValues(false)
-        .valueField('id')
-        .labelField('name')
         .source(this.ctx.admin.api(this.ctx.admin.route('auth_permission.index'), 'export')),
     ]
+  }
+
+  protected actions() {
+    return [
+      amis('action')
+        .label(this.ctx.admin.t('edit'))
+        .dialog(amis('dialog').title(this.ctx.admin.t('edit')).body(this.editor())),
+      amis('action')
+        .label(this.ctx.admin.t('delete'))
+        .actionType('ajax')
+        .api(this.ctx.admin.api('${id}', 'ajax', 'delete'))
+        .confirmText(this.ctx.admin.t('are_you_sure_delete')),
+    ]
+  }
+
+  /**
+   * crud schema or api data
+   */
+  async index(): Promise<any> {
+    // paginate data
+    if (this.ctx.request.header('x-action') === 'export') {
+      let result: any = await this.repository.export(this.ctx.request.qs())
+      result.map((item: any) => {
+        return {
+          label: item.name,
+          value: item.id,
+        }
+      })
+      return this.success(result)
+    }
+
+    // paginate data
+    if (this.ctx.request.header('x-action') === 'ajax') {
+      let all: any[] = []
+      let result = await this.repository.paginate(this.ctx.request.qs())
+      let items = result.all()
+      items.forEach((item) => {
+        let row = item.toJSON()
+        for (let i in row.menus) {
+          row.menus[i] = {
+            label: row.menus[i].name,
+            value: row.menus[i].id,
+          }
+        }
+        for (let i in row.permissions) {
+          row.permissions[i] = {
+            label: row.permissions[i].name,
+            value: row.permissions[i].id,
+          }
+        }
+        all.push(row)
+      })
+      return this.success({ total: result.total, items: all })
+    }
+
+    return await super.index()
   }
 }

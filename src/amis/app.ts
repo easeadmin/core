@@ -99,4 +99,9 @@ export class AppItem extends Schema<AppItem> {
     this.json['children'] = children
     return this
   }
+
+  visible(visible: boolean) {
+    this.json['visible'] = visible
+    return this
+  }
 }

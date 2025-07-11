@@ -18,11 +18,11 @@ export default class UserRepository extends Repository {
   }
 
   async create(data: Record<string, any>) {
-    let roles = data.roles.map((res: { id: any }) => res.id)
+    let roles = this.getAttachValues(data.roles, 'value', [])
     delete data.roles
     return await this.model.transaction(async (trx) => {
       let item = await this.model.create(data, { client: trx })
-      if (roles) {
+      if (roles.length > 0) {
         await item.related('roles' as any).attach(roles)
       }
       return item
@@ -30,7 +30,7 @@ export default class UserRepository extends Repository {
   }
 
   async update(ids: number[] | string[], data: Record<string, any>) {
-    let roles = data.roles ? data.roles.map((res: { id: any }) => res.id) : undefined
+    let roles = data.roles ? this.getAttachValues(data.roles, 'value', []) : undefined
     delete data.roles
     return await this.model.transaction(async (trx) => {
       for (let id of ids) {

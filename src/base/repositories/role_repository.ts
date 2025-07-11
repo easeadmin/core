@@ -10,19 +10,17 @@ export default class RoleRepository extends Repository {
 
   async paginate(qs: Record<string, string>, filters: Record<string, QueryType> = {}) {
     let result = await super.paginate(qs, filters)
-    let items = result.all()
+    let items: any = result.all()
     for (let item of items) {
-      await item.load('menus' as any)
-      await item.load('permissions' as any)
+      await item.load('menus')
+      await item.load('permissions')
     }
     return result
   }
 
   async create(data: Record<string, any>) {
-    let menus = data.menus ? data.menus.map((res: { id: any }) => res.id) : undefined
-    let permissions = data.permissions
-      ? data.permissions.map((res: { id: any }) => res.id)
-      : undefined
+    let menus = this.getAttachValues(data.menus, 'value', [])
+    let permissions = this.getAttachValues(data.permissions, 'value', [])
     delete data.menus
     delete data.permissions
     return await this.model.transaction(async (trx) => {
@@ -48,12 +46,12 @@ export default class RoleRepository extends Repository {
         item.merge(data)
         await item.save()
         if (menus !== undefined) {
-          await item.related('menus' as any).sync(menus.map((res: { id: any }) => res.id))
+          await item.related('menus' as any).sync(this.getAttachValues(menus, 'value', []))
         }
         if (permissions !== undefined) {
           await item
             .related('permissions' as any)
-            .sync(permissions.map((res: { id: any }) => res.id))
+            .sync(this.getAttachValues(permissions, 'value', []))
         }
       }
       return await this.model.query({ client: trx }).whereIn(this.primaryKey, ids)

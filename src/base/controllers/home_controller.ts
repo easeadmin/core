@@ -5,192 +5,32 @@ import Resource from '#extends/resource'
 import app from '@adonisjs/core/services/app'
 const { inject } = await app.import('@adonisjs/core')
 
-const echartPie = {
-  tooltip: {
-    trigger: 'item',
-  },
-  legend: {
-    top: '5%',
-    left: 'center',
-  },
-  series: [
-    {
-      name: 'Access From',
-      type: 'pie',
-      radius: ['40%', '70%'],
-      avoidLabelOverlap: false,
-      itemStyle: {
-        borderRadius: 10,
-        borderColor: '#fff',
-        borderWidth: 2,
-      },
-      label: {
-        show: false,
-        position: 'center',
-      },
-      emphasis: {
-        label: {
-          show: true,
-          fontSize: 40,
-          fontWeight: 'bold',
-        },
-      },
-      labelLine: {
-        show: false,
-      },
-      data: [
-        { value: 1048, name: 'Search Engine' },
-        { value: 735, name: 'Direct' },
-        { value: 580, name: 'Email' },
-        { value: 484, name: 'Union Ads' },
-        { value: 300, name: 'Video Ads' },
-      ],
-    },
-  ],
-}
-
-const echartBarStack = {
-  xAxis: {
-    type: 'category',
-    data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-  },
-  yAxis: {
-    type: 'value',
-  },
-  series: [
-    {
-      data: [120, 200, 150, 80, 70, 110, 130],
-      type: 'bar',
-      stack: 'a',
-      name: 'a',
-    },
-    {
-      data: [10, 46, 64, '-', 0, '-', 0],
-      type: 'bar',
-      stack: 'a',
-      name: 'b',
-    },
-    {
-      data: [30, '-', 0, 20, 10, '-', 0],
-      type: 'bar',
-      stack: 'a',
-      name: 'c',
-    },
-    {
-      data: [30, '-', 0, 20, 10, '-', 0],
-      type: 'bar',
-      stack: 'b',
-      name: 'd',
-    },
-    {
-      data: [10, 20, 150, 0, '-', 50, 10],
-      type: 'bar',
-      stack: 'b',
-      name: 'e',
-    },
-  ],
-}
-
-const echartStackArea = {
-  tooltip: {
-    trigger: 'axis',
-    axisPointer: {
-      type: 'cross',
-      label: {
-        backgroundColor: '#6a7985',
-      },
-    },
-  },
-  legend: {
-    data: ['Email', 'Union Ads', 'Video Ads', 'Direct', 'Search Engine'],
-  },
-  toolbox: {
-    feature: {
-      saveAsImage: {},
-    },
-  },
-  grid: {
-    left: '3%',
-    right: '4%',
-    bottom: '3%',
-    containLabel: true,
-  },
-  xAxis: [
-    {
-      type: 'category',
-      boundaryGap: false,
-      data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-    },
-  ],
-  yAxis: [
-    {
-      type: 'value',
-    },
-  ],
-  series: [
-    {
-      name: 'Email',
-      type: 'line',
-      stack: 'Total',
-      areaStyle: {},
-      emphasis: {
-        focus: 'series',
-      },
-      data: [120, 132, 101, 134, 90, 230, 210],
-    },
-    {
-      name: 'Union Ads',
-      type: 'line',
-      stack: 'Total',
-      areaStyle: {},
-      emphasis: {
-        focus: 'series',
-      },
-      data: [220, 182, 191, 234, 290, 330, 310],
-    },
-    {
-      name: 'Video Ads',
-      type: 'line',
-      stack: 'Total',
-      areaStyle: {},
-      emphasis: {
-        focus: 'series',
-      },
-      data: [150, 232, 201, 154, 190, 330, 410],
-    },
-    {
-      name: 'Direct',
-      type: 'line',
-      stack: 'Total',
-      areaStyle: {},
-      emphasis: {
-        focus: 'series',
-      },
-      data: [320, 332, 301, 334, 390, 330, 320],
-    },
-    {
-      name: 'Search Engine',
-      type: 'line',
-      stack: 'Total',
-      label: {
-        show: true,
-        position: 'top',
-      },
-      areaStyle: {},
-      emphasis: {
-        focus: 'series',
-      },
-      data: [820, 932, 901, 934, 1290, 1330, 1320],
-    },
-  ],
-}
-
 @inject()
 export default class UserController extends Resource {
   protected repository = new UserRepository()
   constructor(protected ctx: HttpContext) {
     super(ctx)
     this.repository.setModel(this.ctx.admin.model('User'))
+  }
+
+  /**
+   * user menus
+   */
+  protected async pages() {
+    let menus = await this.ctx.admin.getMenus()
+    let jsons = menus.map((item) => {
+      return amis('app_item')
+        .label(item.name)
+        .url(item.slug)
+        .schemaApi(this.ctx.admin.api(item.slug, 'schema'))
+        .visible(item.hidden === 0)
+        .icon(item.icon)
+        .attr('id', item.id)
+        .attr('parentId', item.parentId)
+        .toJSON()
+    })
+    let trees = this.ctx.admin.makeTrees(jsons)
+    return trees
   }
 
   /**
@@ -203,7 +43,7 @@ export default class UserController extends Resource {
         .children([
           amis('app_item')
             .label(this.ctx.admin.t('dashboard'))
-            .url('auth_dashboard')
+            .url('auth.home')
             .isDefaultPage(true)
             .icon('dashboard')
             .schemaApi(this.ctx.admin.api(this.ctx.admin.route('auth_home.index'), 'schema')),
@@ -213,19 +53,19 @@ export default class UserController extends Resource {
             .children([
               amis('app_item')
                 .label(this.ctx.admin.t('user'))
-                .url('auth_user.index')
+                .url('auth.user')
                 .schemaApi(this.ctx.admin.api(this.ctx.admin.route('auth_user.index'), 'schema')),
               amis('app_item')
                 .label(this.ctx.admin.t('role'))
-                .url('auth_role.index')
+                .url('auth.role')
                 .schemaApi(this.ctx.admin.api(this.ctx.admin.route('auth_role.index'), 'schema')),
               amis('app_item')
                 .label(this.ctx.admin.t('menu'))
-                .url('auth_menu.index')
+                .url('auth.menu')
                 .schemaApi(this.ctx.admin.api(this.ctx.admin.route('auth_menu.index'), 'schema')),
               amis('app_item')
                 .label(this.ctx.admin.t('permission'))
-                .url('auth_permission.index')
+                .url('auth.permission')
                 .schemaApi(
                   this.ctx.admin.api(this.ctx.admin.route('auth_permission.index'), 'schema')
                 ),
@@ -514,11 +354,6 @@ export default class UserController extends Resource {
     ])
   }
 
-  protected async pages() {
-    // let menus = this.ctx.admin.getMenus()
-    return []
-  }
-
   /**
    * page schema
    */
@@ -584,4 +419,184 @@ export default class UserController extends Resource {
   async destroy() {
     return this.error('missing request')
   }
+}
+
+const echartPie = {
+  tooltip: {
+    trigger: 'item',
+  },
+  legend: {
+    top: '5%',
+    left: 'center',
+  },
+  series: [
+    {
+      name: 'Access From',
+      type: 'pie',
+      radius: ['40%', '70%'],
+      avoidLabelOverlap: false,
+      itemStyle: {
+        borderRadius: 10,
+        borderColor: '#fff',
+        borderWidth: 2,
+      },
+      label: {
+        show: false,
+        position: 'center',
+      },
+      emphasis: {
+        label: {
+          show: true,
+          fontSize: 40,
+          fontWeight: 'bold',
+        },
+      },
+      labelLine: {
+        show: false,
+      },
+      data: [
+        { value: 1048, name: 'Search Engine' },
+        { value: 735, name: 'Direct' },
+        { value: 580, name: 'Email' },
+        { value: 484, name: 'Union Ads' },
+        { value: 300, name: 'Video Ads' },
+      ],
+    },
+  ],
+}
+
+const echartBarStack = {
+  xAxis: {
+    type: 'category',
+    data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+  },
+  yAxis: {
+    type: 'value',
+  },
+  series: [
+    {
+      data: [120, 200, 150, 80, 70, 110, 130],
+      type: 'bar',
+      stack: 'a',
+      name: 'a',
+    },
+    {
+      data: [10, 46, 64, '-', 0, '-', 0],
+      type: 'bar',
+      stack: 'a',
+      name: 'b',
+    },
+    {
+      data: [30, '-', 0, 20, 10, '-', 0],
+      type: 'bar',
+      stack: 'a',
+      name: 'c',
+    },
+    {
+      data: [30, '-', 0, 20, 10, '-', 0],
+      type: 'bar',
+      stack: 'b',
+      name: 'd',
+    },
+    {
+      data: [10, 20, 150, 0, '-', 50, 10],
+      type: 'bar',
+      stack: 'b',
+      name: 'e',
+    },
+  ],
+}
+
+const echartStackArea = {
+  tooltip: {
+    trigger: 'axis',
+    axisPointer: {
+      type: 'cross',
+      label: {
+        backgroundColor: '#6a7985',
+      },
+    },
+  },
+  legend: {
+    data: ['Email', 'Union Ads', 'Video Ads', 'Direct', 'Search Engine'],
+  },
+  toolbox: {
+    feature: {
+      saveAsImage: {},
+    },
+  },
+  grid: {
+    left: '3%',
+    right: '4%',
+    bottom: '3%',
+    containLabel: true,
+  },
+  xAxis: [
+    {
+      type: 'category',
+      boundaryGap: false,
+      data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+    },
+  ],
+  yAxis: [
+    {
+      type: 'value',
+    },
+  ],
+  series: [
+    {
+      name: 'Email',
+      type: 'line',
+      stack: 'Total',
+      areaStyle: {},
+      emphasis: {
+        focus: 'series',
+      },
+      data: [120, 132, 101, 134, 90, 230, 210],
+    },
+    {
+      name: 'Union Ads',
+      type: 'line',
+      stack: 'Total',
+      areaStyle: {},
+      emphasis: {
+        focus: 'series',
+      },
+      data: [220, 182, 191, 234, 290, 330, 310],
+    },
+    {
+      name: 'Video Ads',
+      type: 'line',
+      stack: 'Total',
+      areaStyle: {},
+      emphasis: {
+        focus: 'series',
+      },
+      data: [150, 232, 201, 154, 190, 330, 410],
+    },
+    {
+      name: 'Direct',
+      type: 'line',
+      stack: 'Total',
+      areaStyle: {},
+      emphasis: {
+        focus: 'series',
+      },
+      data: [320, 332, 301, 334, 390, 330, 320],
+    },
+    {
+      name: 'Search Engine',
+      type: 'line',
+      stack: 'Total',
+      label: {
+        show: true,
+        position: 'top',
+      },
+      areaStyle: {},
+      emphasis: {
+        focus: 'series',
+      },
+      data: [820, 932, 901, 934, 1290, 1330, 1320],
+    },
+  ],
 }

@@ -1,5 +1,5 @@
 import { HttpContext } from '@adonisjs/core/http'
-import { amis } from '#amis/amis'
+import { amis, render } from '#amis/amis'
 import { inject } from '@adonisjs/core'
 import { ApiResponse } from '#types'
 import Repository from '#extends/repository'
@@ -179,15 +179,23 @@ export default abstract class Resource {
     }
 
     // paginate data
-    let result = await this.repository.paginate(this.ctx.request.qs())
-    return this.success({ total: result.total, items: result.all() })
+    if (this.ctx.request.header('x-action') === 'ajax') {
+      let result = await this.repository.paginate(this.ctx.request.qs())
+      return this.success({ total: result.total, items: result.all() })
+    }
+
+    return render(this.schema().toJSON(), { title: this.ctx.admin.t('title') })
   }
 
   /**
    * create api
    */
   async create(): Promise<any> {
-    return this.success(amis('page').body(this.creator()).toJSON())
+    if (this.ctx.request.header('x-action') === 'ajax') {
+      return this.success(amis('page').body(this.creator()).toJSON())
+    }
+
+    return render(amis('page').body(this.creator()).toJSON(), { title: this.ctx.admin.t('title') })
   }
 
   /**
@@ -195,7 +203,11 @@ export default abstract class Resource {
    */
   async edit(): Promise<any> {
     // schema render
-    return this.success(amis('page').body(this.editor()).toJSON())
+    if (this.ctx.request.header('x-action') === 'ajax') {
+      return this.success(amis('page').body(this.editor()).toJSON())
+    }
+
+    return render(amis('page').body(this.editor()).toJSON(), { title: this.ctx.admin.t('title') })
   }
 
   /**
@@ -203,7 +215,11 @@ export default abstract class Resource {
    */
   async show(): Promise<any> {
     // schema render
-    return this.success(amis('page').body(this.detail()).toJSON())
+    if (this.ctx.request.header('x-action') === 'ajax') {
+      return this.success(amis('page').body(this.detail()).toJSON())
+    }
+
+    return render(amis('page').body(this.detail()).toJSON(), { title: this.ctx.admin.t('title') })
   }
 
   /**

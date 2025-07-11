@@ -13,7 +13,7 @@ export default class PermissionController extends Resource {
     this.repository.setModel(this.ctx.admin.model('Permission'))
   }
 
-  protected columns() {
+  protected fields() {
     return [
       amis('column_item').name('id').label(this.ctx.admin.t('id')),
       amis('column_item').name('name').label(this.ctx.admin.t('permission_name')),
@@ -33,5 +33,35 @@ export default class PermissionController extends Resource {
       amis('input_text').name('name').label(this.ctx.admin.t('permission_name')),
       amis('input_text').name('slug').label(this.ctx.admin.t('permission_slug')),
     ]
+  }
+
+  async index(): Promise<any> {
+    // export data
+    if (this.ctx.request.header('x-action') === 'export') {
+      let exports = await this.repository.export(this.ctx.request.qs())
+      let jsons = exports.map((item: any) => {
+        return {
+          id: item.id,
+          value: item.id,
+          label: item.name,
+          order: item.order,
+          parentId: item.parentId,
+        }
+      })
+      jsons.sort((a, b) => a.order - b.order)
+      let items = this.ctx.admin.makeTrees(jsons)
+      return this.success(items)
+    }
+
+    // paginate data
+    if (this.ctx.request.header('x-action') === 'ajax') {
+      let exports = await this.repository.export(this.ctx.request.qs())
+      let jsons = exports.map((item: any) => item.toJSON())
+      jsons.sort((a, b) => a.order - b.order)
+      let items = this.ctx.admin.makeTrees(jsons)
+      return this.success({ total: items.length, items: items })
+    }
+
+    return await super.index()
   }
 }

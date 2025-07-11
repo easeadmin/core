@@ -15,6 +15,19 @@ export default abstract class Repository {
     return this.model
   }
 
+  /**
+   * get tree all key value
+   */
+  protected getAttachValues(items: any[], key: string, values: any[]) {
+    items.forEach((item) => {
+      values.push(item[key])
+      if (item.children && item.children.length > 0) {
+        values = this.getAttachValues(item.children, key, values)
+      }
+    })
+    return values
+  }
+
   protected queryBuilder(
     query: ModelQueryBuilderContract<LucidModel, LucidRow>,
     inputs: Record<string, string>,
@@ -89,18 +102,18 @@ export default abstract class Repository {
   async update(ids: number[] | string[], data: Record<string, any>) {
     return await this.model.transaction(async (trx) => {
       for (let id of ids) {
-        let item = await trx.query().where(this.primaryKey, id).firstOrFail()
+        let item = await this.model.query({ client: trx }).where(this.primaryKey, id).firstOrFail()
         item.merge(data)
         await item.save()
       }
-      return this.model.query().whereIn(this.primaryKey, ids)
+      return this.model.query({ client: trx }).whereIn(this.primaryKey, ids)
     })
   }
 
   async delete(ids: string[] | number[]) {
     return await this.model.transaction(async (trx) => {
       for (let id of ids) {
-        let item = await trx.query().where(this.primaryKey, id).firstOrFail()
+        let item = await this.model.query({ client: trx }).where(this.primaryKey, id).firstOrFail()
         await item.delete()
       }
       return true
@@ -110,8 +123,8 @@ export default abstract class Repository {
   async forceDelete(ids: string[] | number[]) {
     return await this.model.transaction(async (trx) => {
       for (let id of ids) {
-        let item = await trx.query().where(this.primaryKey, id).firstOrFail()
-        await item.forceDelete()
+        let item = await this.model.query({ client: trx }).where(this.primaryKey, id).firstOrFail()
+        await (item as any).forceDelete()
       }
       return true
     })
@@ -120,8 +133,8 @@ export default abstract class Repository {
   async restore(ids: string[] | number[]) {
     return await this.model.transaction(async (trx) => {
       for (let id of ids) {
-        let item = await trx.query().where(this.primaryKey, id).firstOrFail()
-        await item.restore()
+        let item = await this.model.query({ client: trx }).where(this.primaryKey, id).firstOrFail()
+        await (item as any).restore()
       }
       return true
     })
