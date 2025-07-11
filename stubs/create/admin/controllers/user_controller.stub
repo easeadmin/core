@@ -7,6 +7,7 @@ import { amis } from '@easeadmin/core/amis/amis'
 import Resource from '@easeadmin/core/extends/resource'
 import UserRepository from '../repositories/user_repository.js'
 
+@inject()
 export default class UserController extends Resource {
   protected repository = new UserRepository
   constructor(ctx: HttpContext) {

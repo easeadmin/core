@@ -18,15 +18,15 @@ export default abstract class Repository {
   /**
    * get tree all key value
    */
-  protected getAttachValues(items: any[], key: string, values: any[]) {
-    items.forEach((item) => {
-      values.push(item[key])
-      if (item.children && item.children.length > 0) {
-        values = this.getAttachValues(item.children, key, values)
-      }
-    })
-    return values
-  }
+  // protected getAttachValues(items: any[], key: string, values: any[]) {
+  //   items.forEach((item) => {
+  //     values.push(item[key])
+  //     if (item.children && item.children.length > 0) {
+  //       values = this.getAttachValues(item.children, key, values)
+  //     }
+  //   })
+  //   return values
+  // }
 
   protected queryBuilder(
     query: ModelQueryBuilderContract<LucidModel, LucidRow>,

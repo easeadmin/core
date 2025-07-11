@@ -19,16 +19,18 @@ export default class RoleRepository extends Repository {
   }
 
   async create(data: Record<string, any>) {
-    let menus = this.getAttachValues(data.menus, 'value', [])
-    let permissions = this.getAttachValues(data.permissions, 'value', [])
+    let menus = data.menus ? data.menus?.map((s: { value: any }) => s.value) : undefined
+    let permissions = data.permissions
+      ? data.permissions?.map((s: { value: any }) => s.value)
+      : undefined
     delete data.menus
     delete data.permissions
     return await this.model.transaction(async (trx) => {
       let item = await this.model.create(data, { client: trx })
-      if (menus.length > 0) {
+      if (menus) {
         await item.related('menus' as any).attach(menus)
       }
-      if (permissions.length > 0) {
+      if (permissions) {
         await item.related('permissions' as any).attach(permissions)
       }
       return item
@@ -36,8 +38,10 @@ export default class RoleRepository extends Repository {
   }
 
   async update(ids: number[] | string[], data: Record<string, any>) {
-    let menus = data.menus
+    let menus = data.menus ? data.menus?.map((s: { value: any }) => s.value) : undefined
     let permissions = data.permissions
+      ? data.permissions?.map((s: { value: any }) => s.value)
+      : undefined
     delete data.menus
     delete data.permissions
     return await this.model.transaction(async (trx) => {
@@ -45,13 +49,11 @@ export default class RoleRepository extends Repository {
         let item = await this.model.query({ client: trx }).where(this.primaryKey, id).firstOrFail()
         item.merge(data)
         await item.save()
-        if (menus !== undefined) {
-          await item.related('menus' as any).sync(this.getAttachValues(menus, 'value', []))
+        if (menus) {
+          await item.related('menus' as any).sync(menus)
         }
-        if (permissions !== undefined) {
-          await item
-            .related('permissions' as any)
-            .sync(this.getAttachValues(permissions, 'value', []))
+        if (permissions) {
+          await item.related('permissions' as any).sync(permissions)
         }
       }
       return await this.model.query({ client: trx }).whereIn(this.primaryKey, ids)

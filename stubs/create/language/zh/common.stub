@@ -25,6 +25,7 @@
     "logout": "退出",
     "logout_success": "退出成功",
     "main": "系统",
+    "menu": "菜单",
     "yes": "是",
     "no": "否",
     "menu_icon": "菜单图标",
@@ -54,5 +55,5 @@
     "updated_at": "更新时间",
     "user": "用户",
     "username": "账号",
-    "fontawesome_name": "支持 fontawesome 名称",
+    "fontawesome_name": "支持 fontawesome 名称"
 }

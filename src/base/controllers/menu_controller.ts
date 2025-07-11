@@ -40,6 +40,7 @@ export default class MenuController extends Resource {
       amis('input_text').name('slug').label(this.ctx.admin.t('menu_slug')),
       amis('tree_select')
         .name('parent_id')
+        .showIcon(false)
         .label(this.ctx.admin.t('menu_parent'))
         .source(this.ctx.admin.api('', 'export'))
         .searchable(true),
