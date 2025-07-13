@@ -1,10 +1,12 @@
 {{{
-    exports({ to: app.makePath(`app/${name}/routes.ts`) })
+     exports({ to: app.makePath(`app/${name}/routes.ts`) })
 }}}
 import router from '@adonisjs/core/services/router'
 import Start from '@easeadmin/core/start'
-import UserController from './controllers/user_controller.js'
+import AdminController from './controllers/admin_controller.js'
 
-Start.make('admin').group(() => {
-  router.resource('user', UserController).as('user')
+Start.make('admin').override({
+  auth_home: () => router.resource('home', AdminController).as('auth_home'),
+}).group(() => {
+  // ...
 })

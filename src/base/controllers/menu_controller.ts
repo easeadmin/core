@@ -38,11 +38,14 @@ export default class MenuController extends Resource {
         .permission(isEdit),
       amis('input_text').name('name').label(this.ctx.admin.t('menu_name')),
       amis('input_text').name('slug').label(this.ctx.admin.t('menu_slug')),
+      amis('input_text').name('order').label(this.ctx.admin.t('menu_order')),
       amis('tree_select')
-        .name('parent_id')
+        .name('parentId')
         .showIcon(false)
         .label(this.ctx.admin.t('menu_parent'))
         .source(this.ctx.admin.api('', 'export'))
+        .valueField('id')
+        .labelField('name')
         .searchable(true),
       amis('input_text')
         .name('icon')
@@ -61,15 +64,7 @@ export default class MenuController extends Resource {
     // export data
     if (this.ctx.request.header('x-action') === 'export') {
       let exports = await this.repository.export(this.ctx.request.qs())
-      let jsons = exports.map((item: any) => {
-        return {
-          id: item.id,
-          value: item.id,
-          label: item.name,
-          order: item.order,
-          parentId: item.parentId,
-        }
-      })
+      let jsons = exports.map((item: any) => item.toJSON())
       jsons.sort((a, b) => a.order - b.order)
       let items = this.ctx.admin.makeTrees(jsons)
       return this.success(items)

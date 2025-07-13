@@ -2,7 +2,7 @@
     exports({ to: app.languageFilesPath(`en/${name}/common.json`) })
 }}}
 {
-    "brand": "Brand",
+    "brand": "EaseAdmin",
     "logo": "/ease/images/logo.png",
     "are_you_sure_delete": "Are you sure delete?",
     "avatar": "Avatar",
@@ -15,6 +15,7 @@
     "edit": "Edit",
     "filter": "Filter",
     "id": "ID",
+    "login_failed": "Login failed",
     "login_captcha": "Login captcha",
     "login_now": "Login now",
     "login_password": "Login password",
@@ -31,6 +32,7 @@
     "menu_icon": "Menu icon",
     "menu_name": "Menu name",
     "menu_slug": "Menu slug",
+    "menu_order": "Menu order",
     "menu_hidden": "Menu hidden",
     "menu_parent": "Menu parent",
     "new_password": "New password",
@@ -43,6 +45,8 @@
     "permission_denied": "Permission denied",
     "permission_name": "Permission name",
     "permission_slug": "Permission slug",
+    "permission_parent": "Permission parent",
+    "permission_order": "Permission order",
     "profile": "Profile",
     "reset": "Reset",
     "role": "Role",

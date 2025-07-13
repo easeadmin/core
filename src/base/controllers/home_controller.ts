@@ -16,28 +16,9 @@ export default class UserController extends Resource {
   /**
    * user menus
    */
-  protected async pages() {
-    let menus = await this.ctx.admin.getMenus()
-    let jsons = menus.map((item) => {
-      return amis('app_item')
-        .label(item.name)
-        .url(item.slug)
-        .schemaApi(this.ctx.admin.api(item.slug, 'schema'))
-        .visible(item.hidden === 0)
-        .icon(item.icon)
-        .attr('id', item.id)
-        .attr('parentId', item.parentId)
-        .toJSON()
-    })
-    let trees = this.ctx.admin.makeTrees(jsons)
-    return trees
-  }
-
-  /**
-   * all menus list
-   */
-  protected fields() {
-    return [
+  private async pages() {
+    // admin menus
+    let admin = [
       amis('app_item')
         .label(this.ctx.admin.t('main'))
         .children([
@@ -72,53 +53,66 @@ export default class UserController extends Resource {
             ]),
         ]),
     ]
-  }
 
-  protected forms() {
-    return [
-      amis('input_text')
-        .name('nickname')
-        .label(this.ctx.admin.t('nickname'))
-        .value(this.ctx.admin.userinfo?.nickname),
-      amis('input_password')
-        .name('old_password')
-        .label(this.ctx.admin.t('old_password'))
-        .validations('minLength:5'),
-      amis('input_password')
-        .name('new_password')
-        .label(this.ctx.admin.t('new_password'))
-        .validations('minLength:5'),
-      amis('input_password')
-        .label(this.ctx.admin.t('password_confirm'))
-        .validations('equalsField:${new_password}'),
-      amis('input_image')
-        .name('avatar')
-        .label(this.ctx.admin.t('avatar'))
-        .value(this.ctx.admin.userinfo?.avatar)
-        .receiver(this.ctx.admin.api(this.ctx.admin.route('auth_home.store'), 'ajax', 'post')),
-    ]
+    // system menus
+    let menus = await this.ctx.admin.getMenus()
+    let jsons = menus.map((item) => {
+      let menu = amis('app_item')
+        .label(item.name)
+        .visible(item.hidden === 0)
+        .icon(item.icon)
+        .attr('id', item.id)
+        .attr('parentId', item.parentId)
+      if (item.slug) {
+        menu.url(item.slug).schemaApi(this.ctx.admin.api(item.slug, 'schema'))
+      }
+      return menu.toJSON()
+    })
+    let trees = this.ctx.admin.makeTrees(jsons)
+
+    // combine admin menus
+    if (await this.ctx.admin.isAdministrator()) {
+      trees = admin.concat(trees)
+    }
+
+    return trees
   }
 
   /**
    * edit profile
    */
-  protected editor() {
+  protected editor(): any {
     return amis('form')
-      .attr('reload', 'window')
-      .api(
-        this.ctx.admin.api(
-          this.ctx.admin.route('auth_login.update', { params: { id: this.ctx.admin.user.id } }),
-          'ajax',
-          'put'
-        )
-      )
-      .body(this.forms())
+      .api(this.ctx.admin.api('#0', 'ajax', 'put'))
+      .reload('window')
+      .body([
+        amis('input_text')
+          .name('nickname')
+          .label(this.ctx.admin.t('nickname'))
+          .value(this.ctx.admin.userinfo?.nickname),
+        amis('input_password')
+          .name('old_password')
+          .label(this.ctx.admin.t('old_password'))
+          .validations('minLength:5'),
+        amis('input_password')
+          .name('new_password')
+          .label(this.ctx.admin.t('new_password'))
+          .validations('minLength:5'),
+        amis('input_password')
+          .label(this.ctx.admin.t('password_confirm'))
+          .validations('equalsField:${new_password}'),
+        amis('input_image')
+          .name('avatar')
+          .label(this.ctx.admin.t('avatar'))
+          .value(this.ctx.admin.userinfo?.avatar)
+          .receiver(this.ctx.admin.api('', 'ajax', 'post')),
+      ])
   }
 
   /**
    * header toolbar
    */
-  protected headerToolbar() {
+  protected headerToolbar(): any {
     return amis('flex')
       .className('w-full')
       .justify('flex-end')
@@ -178,193 +172,18 @@ export default class UserController extends Resource {
       ])
   }
 
-  protected cardCount(options: {
-    title: string
-    tooltip: string
-    icon: string
-    count: number
-    percent: number
-    direction: 'up' | 'down'
-  }) {
-    let trend = options.direction === 'up' ? '↗' : '↘'
-    let color = options.direction === 'up' ? 'success' : 'danger'
-    return amis('card').body([
-      amis('flex')
-        .className('mb-2')
-        .justify('space-between')
-        .alignItems('center')
-        .items([
-          amis('wrapper')
-            .size('none')
-            .body([
-              amis('icon').icon(options.icon).className('mr-2'),
-              amis('tpl').tpl(options.title),
-            ]),
-          amis('remark').content(options.tooltip).placement('left').shape('circle'),
-        ]),
-      amis('flex')
-        .justify('start')
-        .alignItems('center')
-        .items([
-          amis('number').value(options.count).className('text-2xl mr-4'),
-          amis('number')
-            .value(options.percent)
-            .percent(true)
-            .prefix(trend)
-            .className(`text-sm label label-${color}`),
-        ]),
-    ])
-  }
-
-  protected cardChart(options: { title: string; tooltip: string; icon: string; config: object }) {
-    return amis('card').body([
-      amis('flex')
-        .className('mb-2')
-        .justify('space-between')
-        .alignItems('center')
-        .items([
-          amis('wrapper')
-            .size('none')
-            .body([
-              amis('icon').icon(options.icon).className('mr-2'),
-              amis('tpl').tpl(options.title),
-            ]),
-          amis('remark').content(options.tooltip).placement('left').shape('circle'),
-        ]),
-      amis('chart').config(options.config),
-    ])
-  }
-
-  protected cardCustomBody(options: {
-    title: string
-    tooltip: string
-    body: object
-    icon: string
-  }) {
-    return amis('card').body([
-      amis('flex')
-        .className('mb-2')
-        .justify('space-between')
-        .alignItems('center')
-        .items([
-          amis('wrapper')
-            .size('none')
-            .body([
-              amis('icon').icon(options.icon).className('mr-2'),
-              amis('tpl').tpl(options.title),
-            ]),
-          amis('remark').content(options.tooltip).placement('left').shape('circle'),
-        ]),
-      options.body,
-    ])
-  }
-
   /**
    * dashboard schema
    */
-  protected async detail() {
-    return amis('page').body([
-      amis('grid').columns([
-        amis('grid_item')
-          .md(4)
-          .body(
-            this.cardCount({
-              title: 'Total Views',
-              tooltip: 'Page view count',
-              icon: 'eye',
-              count: 1000,
-              percent: 10,
-              direction: 'up',
-            })
-          ),
-        amis('grid_item')
-          .md(4)
-          .body(
-            this.cardCount({
-              title: 'Total Revenue',
-              tooltip: 'Page revenue count',
-              icon: 'btc',
-              count: 888,
-              percent: 8,
-              direction: 'down',
-            })
-          ),
-        amis('grid_item')
-          .md(4)
-          .body(
-            this.cardCount({
-              title: 'Bounce Rate',
-              tooltip: 'Bounce rate count',
-              icon: 'ban',
-              count: 366,
-              percent: 20,
-              direction: 'up',
-            })
-          ),
-      ]),
-      amis('grid').columns([
-        amis('grid_item')
-          .md(7)
-          .body(
-            this.cardChart({
-              title: 'Sales Overview',
-              tooltip: 'Sales count',
-              icon: 'line-chart',
-              config: echartStackArea,
-            })
-          ),
-        amis('grid_item')
-          .md(5)
-          .body(
-            this.cardChart({
-              title: 'Total Subscribe',
-              tooltip: 'Subscribe count',
-              icon: 'line-chart',
-              config: echartBarStack,
-            })
-          ),
-      ]),
-      amis('grid').columns([
-        amis('grid_item')
-          .md(5)
-          .body(
-            this.cardChart({
-              title: 'Sales ',
-              tooltip: 'Selas count',
-              icon: 'pie-chart',
-              config: echartPie,
-            })
-          ),
-        amis('grid_item')
-          .md(7)
-          .body(
-            this.cardCustomBody({
-              title: 'Tasks',
-              tooltip: 'Your Tasks',
-              icon: 'tasks',
-              body: amis('tasks').items([
-                amis('task_item').label('Task 1').key('key1').status(1),
-                amis('task_item').label('Task 1').key('key1').status(5),
-                amis('task_item').label('Task 1').key('key1').status(3),
-                amis('task_item').label('Task 1').key('key1').status(4),
-              ]),
-            })
-          ),
-      ]),
-    ])
+  protected columns(): any {
+    return ['Dashboard home']
   }
 
   /**
    * page schema
    */
-  protected async schema() {
-    let fields = this.fields()
-    let pages = fields.concat(await this.pages())
-    return amis('app')
-      .brandName(this.ctx.admin.t('brand'))
-      .logo(this.ctx.admin.t('logo'))
-      .pages(pages)
-      .header(this.headerToolbar())
+  protected schema(): any {
+    return amis('page').body(this.columns())
   }
 
   /**
@@ -373,15 +192,19 @@ export default class UserController extends Resource {
   async index() {
     // dashboard schema render
     if (this.ctx.request.header('x-action') === 'schema') {
-      let dashboard = await this.detail()
+      let dashboard = this.schema()
       return this.success(dashboard)
     }
 
     // app page render
+    let home = amis('app')
+      .brandName(this.ctx.admin.t('brand'))
+      .logo(this.ctx.admin.t('logo'))
+      .header(this.headerToolbar())
+      .pages(await this.pages())
     let css =
       '<style>.avatar-sm img{width:2rem;height:2rem;border-radius:100%;overflow:hidden;margin-right:0.5rem;margin-right:10px !important}</style>'
-    let schema = await this.schema()
-    return render(schema, { title: this.ctx.admin.t('title'), inject: css })
+    return render(home.toJSON(), { title: this.ctx.admin.t('title'), inject: css })
   }
 
   /**
@@ -419,184 +242,4 @@ export default class UserController extends Resource {
   async destroy() {
     return this.error('missing request')
   }
-}
-
-const echartPie = {
-  tooltip: {
-    trigger: 'item',
-  },
-  legend: {
-    top: '5%',
-    left: 'center',
-  },
-  series: [
-    {
-      name: 'Access From',
-      type: 'pie',
-      radius: ['40%', '70%'],
-      avoidLabelOverlap: false,
-      itemStyle: {
-        borderRadius: 10,
-        borderColor: '#fff',
-        borderWidth: 2,
-      },
-      label: {
-        show: false,
-        position: 'center',
-      },
-      emphasis: {
-        label: {
-          show: true,
-          fontSize: 40,
-          fontWeight: 'bold',
-        },
-      },
-      labelLine: {
-        show: false,
-      },
-      data: [
-        { value: 1048, name: 'Search Engine' },
-        { value: 735, name: 'Direct' },
-        { value: 580, name: 'Email' },
-        { value: 484, name: 'Union Ads' },
-        { value: 300, name: 'Video Ads' },
-      ],
-    },
-  ],
-}
-
-const echartBarStack = {
-  xAxis: {
-    type: 'category',
-    data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-  },
-  yAxis: {
-    type: 'value',
-  },
-  series: [
-    {
-      data: [120, 200, 150, 80, 70, 110, 130],
-      type: 'bar',
-      stack: 'a',
-      name: 'a',
-    },
-    {
-      data: [10, 46, 64, '-', 0, '-', 0],
-      type: 'bar',
-      stack: 'a',
-      name: 'b',
-    },
-    {
-      data: [30, '-', 0, 20, 10, '-', 0],
-      type: 'bar',
-      stack: 'a',
-      name: 'c',
-    },
-    {
-      data: [30, '-', 0, 20, 10, '-', 0],
-      type: 'bar',
-      stack: 'b',
-      name: 'd',
-    },
-    {
-      data: [10, 20, 150, 0, '-', 50, 10],
-      type: 'bar',
-      stack: 'b',
-      name: 'e',
-    },
-  ],
-}
-
-const echartStackArea = {
-  tooltip: {
-    trigger: 'axis',
-    axisPointer: {
-      type: 'cross',
-      label: {
-        backgroundColor: '#6a7985',
-      },
-    },
-  },
-  legend: {
-    data: ['Email', 'Union Ads', 'Video Ads', 'Direct', 'Search Engine'],
-  },
-  toolbox: {
-    feature: {
-      saveAsImage: {},
-    },
-  },
-  grid: {
-    left: '3%',
-    right: '4%',
-    bottom: '3%',
-    containLabel: true,
-  },
-  xAxis: [
-    {
-      type: 'category',
-      boundaryGap: false,
-      data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-    },
-  ],
-  yAxis: [
-    {
-      type: 'value',
-    },
-  ],
-  series: [
-    {
-      name: 'Email',
-      type: 'line',
-      stack: 'Total',
-      areaStyle: {},
-      emphasis: {
-        focus: 'series',
-      },
-      data: [120, 132, 101, 134, 90, 230, 210],
-    },
-    {
-      name: 'Union Ads',
-      type: 'line',
-      stack: 'Total',
-      areaStyle: {},
-      emphasis: {
-        focus: 'series',
-      },
-      data: [220, 182, 191, 234, 290, 330, 310],
-    },
-    {
-      name: 'Video Ads',
-      type: 'line',
-      stack: 'Total',
-      areaStyle: {},
-      emphasis: {
-        focus: 'series',
-      },
-      data: [150, 232, 201, 154, 190, 330, 410],
-    },
-    {
-      name: 'Direct',
-      type: 'line',
-      stack: 'Total',
-      areaStyle: {},
-      emphasis: {
-        focus: 'series',
-      },
-      data: [320, 332, 301, 334, 390, 330, 320],
-    },
-    {
-      name: 'Search Engine',
-      type: 'line',
-      stack: 'Total',
-      label: {
-        show: true,
-        position: 'top',
-      },
-      areaStyle: {},
-      emphasis: {
-        focus: 'series',
-      },
-      data: [820, 932, 901, 934, 1290, 1330, 1320],
-    },
-  ],
 }

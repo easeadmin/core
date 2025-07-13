@@ -32,6 +32,15 @@ export default class PermissionController extends Resource {
         .permission(isEdit),
       amis('input_text').name('name').label(this.ctx.admin.t('permission_name')),
       amis('input_text').name('slug').label(this.ctx.admin.t('permission_slug')),
+      amis('input_text').name('order').label(this.ctx.admin.t('permission_order')),
+      amis('tree_select')
+        .name('parentId')
+        .showIcon(false)
+        .label(this.ctx.admin.t('permission_parent'))
+        .source(this.ctx.admin.api('', 'export'))
+        .valueField('id')
+        .labelField('name')
+        .searchable(true),
     ]
   }
 
@@ -39,15 +48,7 @@ export default class PermissionController extends Resource {
     // export data
     if (this.ctx.request.header('x-action') === 'export') {
       let exports = await this.repository.export(this.ctx.request.qs())
-      let jsons = exports.map((item: any) => {
-        return {
-          id: item.id,
-          value: item.id,
-          label: item.name,
-          order: item.order,
-          parentId: item.parentId,
-        }
-      })
+      let jsons = exports.map((item: any) => item.toJSON())
       jsons.sort((a, b) => a.order - b.order)
       let items = this.ctx.admin.makeTrees(jsons)
       return this.success(items)

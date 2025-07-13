@@ -8,55 +8,53 @@ export default class UserRepository extends Repository {
     this.model = model
   }
 
-  async paginate(qs: Record<string, string>, filters: Record<string, QueryType> = {}) {
-    let result = await super.paginate(qs, filters)
-    let items = result.all()
-    for (let item of items) {
-      await item.load('roles' as any)
-    }
+  async paginate(qs: Record<string, any>, filters: Record<string, QueryType> = {}) {
+    let query = this.queryBuilder(this.model.query(), qs, filters).preload('roles' as any)
+    let result: any = await query.paginate(Number.parseInt(qs.page), Number.parseInt(qs.per_page))
     return result
   }
 
   async create(data: Record<string, any>) {
-    let roles = data.roles ? data.roles.map((s: { value: any }) => s.value) : undefined
-    delete data.roles
     return await this.model.transaction(async (trx) => {
-      let item = await this.model.create(data, { client: trx })
-      if (roles) {
-        await item.related('roles' as any).attach(roles)
+      let result = await this.model.create(
+        this.only(data, ['username', 'nickname', 'password', 'avatar']),
+        { client: trx }
+      )
+      if (data.roles) {
+        await result.related('roles' as any).attach(this.relations(data.roles))
       }
-      return item
+      return result
     })
   }
 
   async update(ids: number[] | string[], data: Record<string, any>) {
-    let roles = data.roles ? data.roles.map((s: { value: any }) => s.value) : undefined
-    delete data.roles
+    let update = this.only(data, ['username', 'nickname', 'password', 'avatar'])
     return await this.model.transaction(async (trx) => {
-      for (let id of ids) {
+      ids.forEach(async (id) => {
         let item = await this.model.query({ client: trx }).where(this.primaryKey, id).firstOrFail()
-        item.merge(data)
-        await item.save()
-        if (roles !== undefined) {
-          await item.related('roles' as any).sync(roles)
+        await item.merge(update).save()
+        if (data.roles) {
+          await item.related('roles' as any).sync(this.relations(data.roles))
         }
-      }
+      })
       return await this.model.query({ client: trx }).whereIn(this.primaryKey, ids)
     })
   }
 
   async detail(id: number | string) {
-    let result = await super.detail(id)
-    await result.load('roles' as any)
-    return result
+    return await this.model
+      .query()
+      .where(this.primaryKey, id)
+      .preload('roles' as any)
+      .firstOrFail()
   }
 
   async delete(ids: string[] | number[]) {
-    for (let id of ids) {
+    ids.forEach((id) => {
       if (`${id}` === '1') {
         throw new Error('deleting superadmin is not allowed')
       }
-    }
+    })
     return await super.delete(ids)
   }
 }

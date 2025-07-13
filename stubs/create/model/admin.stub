@@ -127,22 +127,13 @@ export class Menu extends BaseModel {
   declare hidden: number
 
   @column()
-  declare parentId: number
+  declare parentId: number | null
 
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime | null
-
-  @manyToMany(() => Role, {
-    localKey: 'id',
-    relatedKey: 'id',
-    pivotForeignKey: 'role_id',
-    pivotRelatedForeignKey: 'menu_id',
-    pivotTable: config.database.role_menu_table,
-  })
-  declare roles: ManyToMany<typeof Role>
 }
 
 /**
@@ -165,22 +156,13 @@ export class Permission extends BaseModel {
   declare order: number
 
   @column()
-  declare parentId: number
+  declare parentId: number | null
 
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime | null
-
-  @manyToMany(() => Role, {
-    localKey: 'id',
-    relatedKey: 'id',
-    pivotForeignKey: 'role_id',
-    pivotRelatedForeignKey: 'permission_id',
-    pivotTable: config.database.role_permission_table,
-  })
-  declare roles: ManyToMany<typeof Role>
 }
 
 export default User

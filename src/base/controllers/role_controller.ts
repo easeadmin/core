@@ -39,8 +39,10 @@ export default class RoleController extends Resource {
         .joinValues(false)
         .showIcon(false)
         .enableDefaultIcon(false)
-        .treeContainerClassName('h-80')
+        .valueField('id')
+        .labelField('name')
         .name('menus')
+        .treeContainerClassName('h-80')
         .label(this.ctx.admin.t('menu'))
         .source(this.ctx.admin.api(this.ctx.admin.route('auth_menu.index'), 'export')),
       amis('input_tree')
@@ -50,8 +52,10 @@ export default class RoleController extends Resource {
         .joinValues(false)
         .showIcon(false)
         .enableDefaultIcon(false)
-        .treeContainerClassName('h-80')
+        .valueField('id')
+        .labelField('name')
         .name('permissions')
+        .treeContainerClassName('h-80')
         .label(this.ctx.admin.t('permission'))
         .source(this.ctx.admin.api(this.ctx.admin.route('auth_permission.index'), 'export')),
     ]
@@ -77,37 +81,13 @@ export default class RoleController extends Resource {
     // paginate data
     if (this.ctx.request.header('x-action') === 'export') {
       let result: any = await this.repository.export(this.ctx.request.qs())
-      result.map((item: any) => {
-        return {
-          label: item.name,
-          value: item.id,
-        }
-      })
       return this.success(result)
     }
 
     // paginate data
     if (this.ctx.request.header('x-action') === 'ajax') {
-      let all: any[] = []
       let result = await this.repository.paginate(this.ctx.request.qs())
-      let items = result.all()
-      items.forEach((item) => {
-        let row = item.toJSON()
-        for (let i in row.menus) {
-          row.menus[i] = {
-            label: row.menus[i].name,
-            value: row.menus[i].id,
-          }
-        }
-        for (let i in row.permissions) {
-          row.permissions[i] = {
-            label: row.permissions[i].name,
-            value: row.permissions[i].id,
-          }
-        }
-        all.push(row)
-      })
-      return this.success({ total: result.total, items: all })
+      return this.success({ total: result.total, items: result.all() })
     }
 
     return await super.index()

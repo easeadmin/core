@@ -18,10 +18,7 @@ export default class CreateCommand extends BaseCommand {
     codemods.overwriteExisting = this.force
 
     // app
-    await codemods.makeUsingStub(stubsRoot, '/create/admin/controllers/user_controller.stub', {
-      name: this.name,
-    })
-    await codemods.makeUsingStub(stubsRoot, '/create/admin/repositories/user_repository.stub', {
+    await codemods.makeUsingStub(stubsRoot, '/create/admin/controllers/admin_controller.stub', {
       name: this.name,
     })
     await codemods.makeUsingStub(stubsRoot, '/create/admin/routes.stub', {

@@ -2,9 +2,7 @@ import type { LucidRow, LucidModel, ModelQueryBuilderContract } from '@adonisjs/
 import { QueryType } from '#types'
 
 export default abstract class Repository {
-  protected primaryKey = 'id'
-  protected maxPageLimit = 100
-  protected maxExportLimit = 1000
+  protected primaryKey: string = 'id'
   protected abstract model: LucidModel
   protected filters: Record<string, QueryType> = {
     id: QueryType.eq,
@@ -15,24 +13,12 @@ export default abstract class Repository {
     return this.model
   }
 
-  /**
-   * get tree all key value
-   */
-  // protected getAttachValues(items: any[], key: string, values: any[]) {
-  //   items.forEach((item) => {
-  //     values.push(item[key])
-  //     if (item.children && item.children.length > 0) {
-  //       values = this.getAttachValues(item.children, key, values)
-  //     }
-  //   })
-  //   return values
-  // }
-
   protected queryBuilder(
     query: ModelQueryBuilderContract<LucidModel, LucidRow>,
     inputs: Record<string, string>,
     filters: Record<string, QueryType> = {}
   ) {
+    filters = Object.assign(this.filters, filters)
     for (let key in inputs) {
       if (inputs[key] === '') {
         continue
@@ -74,23 +60,48 @@ export default abstract class Repository {
     return query
   }
 
-  async paginate(qs: Record<string, string>, filters: Record<string, QueryType> = {}) {
-    let perPage = Number.parseInt(qs.per_page ?? '10')
-    perPage = perPage > this.maxPageLimit ? this.maxPageLimit : perPage
-    let query = this.queryBuilder(this.model.query(), qs, Object.assign(this.filters, filters))
-    let result = await query.paginate(Number.parseInt(qs.page ?? '1'), perPage)
-    return result
+  protected only(qs: Record<string, any>, keys: string[]) {
+    let map: Record<string, any> = {}
+    for (let key of keys) {
+      map[key] = qs[key]
+    }
+    return map
+  }
+
+  protected except(qs: Record<string, any>, keys: string[]) {
+    let map: Record<string, any> = {}
+    for (let key in qs) {
+      if (!keys.includes(key)) {
+        map[key] = qs[key]
+      }
+    }
+    return map
+  }
+
+  protected relations(items: Record<string, any>[] | string, key: string = 'id') {
+    let ids = []
+    if (typeof items === 'string') {
+      ids = items.split(',')
+    } else {
+      for (let item of items) {
+        ids.push(item[key])
+      }
+    }
+    return ids
+  }
+
+  async paginate(qs: Record<string, any>, filters: Record<string, QueryType> = {}) {
+    let query = this.queryBuilder(this.model.query(), qs, filters)
+    return await query.paginate(Number.parseInt(qs.page), Number.parseInt(qs.per_page))
   }
 
   async export(qs: Record<string, string>, filters: Record<string, QueryType> = {}) {
-    let query = this.queryBuilder(this.model.query(), qs, Object.assign(this.filters, filters))
-    let result = query.limit(this.maxExportLimit)
-    return result
+    let query = this.queryBuilder(this.model.query(), qs, filters)
+    return await query.limit(100000)
   }
 
   async detail(id: number | string) {
-    let result = await this.model.findByOrFail(this.primaryKey, id)
-    return result
+    return await this.model.query().where(this.primaryKey, id).firstOrFail()
   }
 
   async create(data: Record<string, any>) {
@@ -106,7 +117,7 @@ export default abstract class Repository {
         item.merge(data)
         await item.save()
       }
-      return this.model.query({ client: trx }).whereIn(this.primaryKey, ids)
+      return await this.model.query({ client: trx }).whereIn(this.primaryKey, ids)
     })
   }
 

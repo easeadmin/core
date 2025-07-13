@@ -117,6 +117,8 @@ export default class Admin {
       url = this.url + '/' + url
     } else if (url.indexOf('?') === 0) {
       url = this.url + url
+    } else if (url.indexOf('#') === 0) {
+      url = this.url + url.replace('#', '/')
     }
     let headers: Record<string, string> = { 'x-action': action }
     if (method !== 'get') {
@@ -164,7 +166,7 @@ export default class Admin {
     })
 
     items.forEach((item) => {
-      if (item.parentId === 0) {
+      if (item.parentId < 1) {
         trees.push(flats[item.id])
       } else {
         let parent = flats[item.parentId]
@@ -324,7 +326,7 @@ export default class Admin {
       } else {
         let permissions = await this.getPermissions()
         for (let item of permissions) {
-          if (item.slug === slug) {
+          if (slug.indexOf(item.slug) === 0) {
             return true
           }
         }

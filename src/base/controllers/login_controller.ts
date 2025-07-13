@@ -120,14 +120,6 @@ export default class UserController extends Resource {
       ])
   }
 
-  async show() {
-    return this.index()
-  }
-
-  async edit() {
-    return this.index()
-  }
-
   async index() {
     return render(this.schema(), { title: this.ctx.admin.t('login_title') })
   }
