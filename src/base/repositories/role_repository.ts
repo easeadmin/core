@@ -12,7 +12,10 @@ export default class RoleRepository extends Repository {
     let query = this.queryBuilder(this.model.query(), qs, filters)
       .preload('menus' as any)
       .preload('permissions' as any)
-    let result: any = await query.paginate(Number.parseInt(qs.page), Number.parseInt(qs.per_page))
+    let result: any = await query.paginate(
+      Number.parseInt(qs.page ?? 1),
+      Number.parseInt(qs.per_page ?? 10)
+    )
     return result
   }
 
@@ -32,7 +35,7 @@ export default class RoleRepository extends Repository {
   async update(ids: number[] | string[], data: Record<string, any>) {
     let update = this.only(data, ['name', 'slug'])
     return await this.model.transaction(async (trx) => {
-      ids.forEach(async (id) => {
+      for (let id of ids) {
         let item = await this.model.query({ client: trx }).where(this.primaryKey, id).firstOrFail()
         await item.merge(update).save()
         if (data.menus) {
@@ -41,7 +44,7 @@ export default class RoleRepository extends Repository {
         if (data.permissions) {
           await item.related('permissions' as any).sync(this.relations(data.permissions))
         }
-      })
+      }
       return await this.model.query({ client: trx }).whereIn(this.primaryKey, ids)
     })
   }

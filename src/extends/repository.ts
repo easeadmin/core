@@ -92,7 +92,7 @@ export default abstract class Repository {
 
   async paginate(qs: Record<string, any>, filters: Record<string, QueryType> = {}) {
     let query = this.queryBuilder(this.model.query(), qs, filters)
-    return await query.paginate(Number.parseInt(qs.page), Number.parseInt(qs.per_page))
+    return await query.paginate(Number.parseInt(qs.page ?? 1), Number.parseInt(qs.per_page ?? 10))
   }
 
   async export(qs: Record<string, string>, filters: Record<string, QueryType> = {}) {

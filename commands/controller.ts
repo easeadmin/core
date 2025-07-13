@@ -15,6 +15,9 @@ export default class CreateCommand extends BaseCommand {
   @flags.string({ description: 'Application Name', required: false, default: 'admin' })
   declare name: string
 
+  @flags.boolean({ description: 'Force create', default: false })
+  declare force: boolean
+
   async run() {
     let columns: any[] = []
     let controller = this.controller
@@ -24,29 +27,29 @@ export default class CreateCommand extends BaseCommand {
       const repo: any = await this.app.importDefault(path)
       const repos = new repo()
       let defineitions = repos.getModel().$columnsDefinitions
-      defineitions.forEach((item: any) => {
-        if (item.serializeAs) {
-          let type = 'text'
-          if (item.meta) {
-            if (item.meta.type === 'json') {
-              type = 'json'
-            } else if (item.meta.type === 'date') {
-              type = 'date'
-            } else if (item.meta.type === 'datetime') {
-              type = 'datetime'
-            } else if (item.meta.type === 'number') {
-              type = 'number'
-            }
+      defineitions.forEach((item: any, key: string) => {
+        let type = 'text'
+        if (item.meta) {
+          if (item.meta.type === 'json') {
+            type = 'json'
+          } else if (item.meta.type === 'date') {
+            type = 'date'
+          } else if (item.meta.type === 'datetime') {
+            type = 'datetime'
+          } else if (item.meta.type === 'number') {
+            type = 'number'
           }
-          columns.push({
-            name: item.serializeAs,
-            type: type,
-          })
         }
+        columns.push({
+          name: key,
+          type: type,
+          label: item.columnName,
+        })
       })
     }
     const stubsRoot = resolve(import.meta.dirname, '../stubs')
     const codemods = await this.createCodemods()
+    codemods.overwriteExisting = this.force
     await codemods.makeUsingStub(stubsRoot, '/make/controller.stub', {
       controller: controller,
       repository: repository,
