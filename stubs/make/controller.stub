@@ -1,0 +1,34 @@
+{{#var controllerName = generators.controllerName(controller)}}
+{{#var modelName = generators.modelName(repository)}}
+{{{
+  exports({ to: app.makePath(`app/${name}/controllers/${controller}_controller.ts`) })
+}}}
+import { HttpContext } from '@adonisjs/core/http'
+import { inject } from '@adonisjs/core'
+import { amis } from '@easeadmin/core/amis/amis'
+import Resource from '@easeadmin/core/extends/resource'
+import {{modelName}}Repository from '../repositories/{{repository}}_repository.js'
+
+@inject()
+export default class {{controllerName}} extends Resource {
+  protected repository = new {{modelName}}Repository
+  constructor(ctx: HttpContext) {
+    super(ctx)
+  }
+
+  protected fields() {
+    return [
+{{#each columns as item }}
+      amis('column_item').name('{{item.name}}').label(this.ctx.admin.t('{{item.name}}')),
+{{/each}}
+    ]
+  }
+
+  protected forms(isEdit: boolean) {
+    return [
+{{#each columns as item }}
+      amis('input_{{item.type}}').name('{{item.name}}').label(this.ctx.admin.t('{{item.name}}')),
+{{/each}}
+    ]
+  }
+}

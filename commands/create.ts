@@ -1,4 +1,4 @@
-import { BaseCommand, flags } from '@adonisjs/core/ace'
+import { BaseCommand, args, flags } from '@adonisjs/core/ace'
 import { resolve } from 'node:path'
 import fs from 'node:fs'
 
@@ -6,7 +6,7 @@ export default class CreateCommand extends BaseCommand {
   static commandName = 'admin:create'
   static description = 'Create a admin application'
 
-  @flags.string({ description: 'Application Name', default: 'admin' })
+  @args.string({ description: 'Application Name', default: 'admin' })
   declare name: string
 
   @flags.boolean({ description: 'Force create', default: false })

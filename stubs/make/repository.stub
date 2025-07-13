@@ -1,0 +1,10 @@
+{{#var modelName = generators.modelName(model)}}
+{{{
+  exports({ to: app.makePath(`app/${name}/repositories/${repository}_repository.ts`) })
+}}}
+import Repository from '@easeadmin/core/extends/repository'
+import {{modelName}} from '#models/{{model}}'
+
+export default class {{modelName}}Repository extends Repository {
+    protected model = {{modelName}}
+}
