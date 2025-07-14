@@ -124,7 +124,7 @@ export class Menu extends BaseModel {
   declare order: number
 
   @column()
-  declare hidden: number
+  declare visible: number
 
   @column()
   declare parentId: number | null

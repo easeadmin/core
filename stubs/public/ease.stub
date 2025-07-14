@@ -187,7 +187,7 @@ const ease = new (function () {
   }
 
   this.render = (schema, props = {}, env = {}) => {
-    const client = this.storage('settings')
+    let client = this.storage('settings')
     if (!client) {
       if (props.context && props.context.client) {
         client = props.context.client
@@ -198,13 +198,13 @@ const ease = new (function () {
     if (client.theme === undefined) {
       client.theme = 'cxd'
     }
-    if (client.locale === undefined) {
-      client.locale = window.navigator.languages[0]
-    }
     if (client.darkness === undefined) {
       client.darkness = !!window.matchMedia('(prefers-color-scheme: dark)').matches
     }
-    props.locale = client.locale
+    if (client.lang === undefined || client.lang === 'auto') {
+      client.lang = window.navigator.languages[0]
+    }
+    props.locale = client.lang
     env.theme = nowTheme(client.theme, client.darkness)
 
     // init the amis app

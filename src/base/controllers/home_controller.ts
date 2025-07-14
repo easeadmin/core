@@ -3,6 +3,7 @@ import { HttpContext } from '@adonisjs/core/http'
 import UserRepository from '#base/repositories/user_repository'
 import Resource from '#extends/resource'
 import app from '@adonisjs/core/services/app'
+import { AppItem } from '#amis/app'
 const { inject } = await app.import('@adonisjs/core')
 
 @inject()
@@ -20,18 +21,25 @@ export default class UserController extends Resource {
     let menus = await this.ctx.admin.getMenus()
     let jsons = menus.map((item) => {
       let menu = amis('app_item')
-        .label(item.name)
-        .visible(item.visible)
+        .label(this.ctx.admin.t(item.name))
+        .visible(item.visible === 1)
         .icon(item.icon)
         .attr('id', item.id)
         .attr('parentId', item.parentId)
       if (item.slug) {
         menu.url(item.slug).schemaApi(this.ctx.admin.api(item.slug, 'schema'))
       }
+      if (item.id === 2) {
+        menu.isDefaultPage(true)
+      }
       return menu.toJSON()
     })
-    let trees = this.ctx.admin.makeTrees(jsons)
+    let trees = this.ctx.admin.makeTrees(jsons).concat(this.menus())
     return trees
+  }
+
+  protected menus(): AppItem[] {
+    return []
   }
 
   /**

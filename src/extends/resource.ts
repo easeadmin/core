@@ -155,7 +155,7 @@ export default abstract class Resource {
         .syncLocation(false)
         .filterTogglable(true)
         .filterDefaultVisible(false)
-        .defaultParams({ orderBy: 'id', orderDir: 'desc' })
+        // .defaultParams({ orderBy: 'id', orderDir: 'desc' })
         .footerToolbar(['statistics', 'switch-per-page', 'pagination'])
         .bulkActions(this.bulkActions())
         .headerToolbar(this.headerToolbar())

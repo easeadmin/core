@@ -18,7 +18,7 @@ export default class MenuController extends Resource {
       amis('column_item').name('id').label(this.ctx.admin.t('id')),
       amis('column_item').name('name').label(this.ctx.admin.t('menu_name')),
       amis('column_item').name('slug').label(this.ctx.admin.t('menu_slug')),
-      amis('column_item').name('icon').label(this.ctx.admin.t('menu_icon')).type('icon'),
+      amis('column_item').name('icon').label(this.ctx.admin.t('menu_icon')),
       amis('column_item')
         .name('visible')
         .label(this.ctx.admin.t('menu_visible'))
@@ -56,7 +56,8 @@ export default class MenuController extends Resource {
         .name('visible')
         .label(this.ctx.admin.t('menu_visible'))
         .trueValue(1)
-        .falseValue(0),
+        .falseValue(0)
+        .value(1),
     ]
   }
 

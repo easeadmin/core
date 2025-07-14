@@ -33,6 +33,7 @@ export default class RoleController extends Resource {
       amis('input_text').name('name').label(this.ctx.admin.t('role_name')),
       amis('input_text').name('slug').label(this.ctx.admin.t('role_slug')),
       amis('input_tree')
+        .cascade(true)
         .multiple(true)
         .searchable(true)
         .joinValues(false)

@@ -10,6 +10,7 @@ export default defineConfig({
     permission: true,
   },
   client: {
+    lang: 'auto',
     theme: 'cxd',
     darkness: true,
   },

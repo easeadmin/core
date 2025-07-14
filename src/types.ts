@@ -5,6 +5,7 @@ export type AdminConfig = {
     permission: boolean
   }
   client: {
+    lang: string
     theme: string
     darkness: boolean
   }
