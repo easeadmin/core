@@ -20,7 +20,7 @@
 * 代码生成器
 
 # 开发流程
-查看完整开发流程示例 [用户管理页面](https://github.com/easeadmin/core/tree/main/docs/zh/devcase.md)
+查看完整开发流程示例 [用户管理页面](https://github.com/easeadmin/core/tree/main/docs/zh/developcase.md)
 1. 创建模型和数据库迁移
 2. 创建模型仓库
 3. 创建控制器
