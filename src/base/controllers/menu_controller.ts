@@ -20,8 +20,8 @@ export default class MenuController extends Resource {
       amis('column_item').name('slug').label(this.ctx.admin.t('menu_slug')),
       amis('column_item').name('icon').label(this.ctx.admin.t('menu_icon')).type('icon'),
       amis('column_item')
-        .name('hidden')
-        .label(this.ctx.admin.t('menu_hidden'))
+        .name('visible')
+        .label(this.ctx.admin.t('menu_visible'))
         .type('mapping')
         .attr('map', { '0': this.ctx.admin.t('no'), '1': this.ctx.admin.t('yes') }),
       amis('column_item').name('createdAt').type('datetime').label(this.ctx.admin.t('created_at')),
@@ -53,8 +53,8 @@ export default class MenuController extends Resource {
         .prefix('fa-')
         .description(this.ctx.admin.t('fontawesome_name')),
       amis('input_switch')
-        .name('hidden')
-        .label(this.ctx.admin.t('menu_hidden'))
+        .name('visible')
+        .label(this.ctx.admin.t('menu_visible'))
         .trueValue(1)
         .falseValue(0),
     ]

@@ -33,7 +33,7 @@
     "menu_name": "菜单名称",
     "menu_slug": "菜单标识",
     "menu_order": "菜单排序",
-    "menu_hidden": "菜单隐藏",
+    "menu_visible": "菜单显示",
     "menu_parent": "菜单父级",
     "new_password": "新密码",
     "nickname": "昵称",

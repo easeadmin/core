@@ -30,7 +30,7 @@ export default class extends BaseSchema {
       table.string('slug', 50).nullable().unique()
       table.string('icon', 50).nullable()
       table.integer('order').unsigned().defaultTo(0)
-      table.integer('hidden').unsigned().defaultTo(0)
+      table.integer('visible').unsigned().defaultTo(0)
       table.integer('parent_id').unsigned().nullable()
       table.timestamp('created_at').nullable()
       table.timestamp('updated_at').nullable()

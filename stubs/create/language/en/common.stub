@@ -33,7 +33,7 @@
     "menu_name": "Menu name",
     "menu_slug": "Menu slug",
     "menu_order": "Menu order",
-    "menu_hidden": "Menu hidden",
+    "menu_visible": "Menu visible",
     "menu_parent": "Menu parent",
     "new_password": "New password",
     "nickname": "Nickname",
