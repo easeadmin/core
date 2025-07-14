@@ -33,7 +33,6 @@ export default class RoleController extends Resource {
       amis('input_text').name('name').label(this.ctx.admin.t('role_name')),
       amis('input_text').name('slug').label(this.ctx.admin.t('role_slug')),
       amis('input_tree')
-        .cascade(true)
         .multiple(true)
         .searchable(true)
         .joinValues(false)
@@ -46,7 +45,6 @@ export default class RoleController extends Resource {
         .label(this.ctx.admin.t('menu'))
         .source(this.ctx.admin.api(this.ctx.admin.route('auth_menu.index'), 'export')),
       amis('input_tree')
-        .cascade(true)
         .multiple(true)
         .searchable(true)
         .joinValues(false)

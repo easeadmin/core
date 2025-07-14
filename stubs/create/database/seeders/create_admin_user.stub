@@ -26,12 +26,10 @@ export default class extends BaseSeeder {
         user_id: 1,
         role_id: 1,
       })
-
       await trx.table(config.database.menu_table).multiInsert([
         {
           id: 1,
           name: "main",
-          slug: "",
         },
         {
           id: 2,
@@ -43,7 +41,6 @@ export default class extends BaseSeeder {
         {
           id: 3,
           name: "setting",
-          slug: "",
           icon: "cog",
           parent_id: 1,
         },
@@ -103,6 +100,41 @@ export default class extends BaseSeeder {
           parent_id: 1,
         },
       ])
+      await trx.table(config.database.role_menu_table).multiInsert([
+        {
+          role_id: 1,
+          menu_id: 1,
+        },
+        {
+          role_id: 1,
+          menu_id: 2,
+        },
+        {
+          role_id: 1,
+          menu_id: 3,
+        },
+        {
+          role_id: 1,
+          menu_id: 4,
+        },
+        {
+          role_id: 1,
+          menu_id: 5,
+        },
+        {
+          role_id: 1,
+          menu_id: 6,
+        },
+        {
+          role_id: 1,
+          menu_id: 7,
+        },
+      ])
+
+      await trx.table(config.database.role_permission_table).insert({
+        role_id: 1,
+        permission_id: 1,
+      })
     })
   }
 }
