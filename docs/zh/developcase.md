@@ -1,6 +1,6 @@
-基于 EaseAdmin 的代码生成命令，你可以很快的创建出一个功能完善的 CRUD 页面，下面为你演示如何快速创建一个用户管理面板
+基于 EaseAdmin 的代码生成命令，你可以很快的创建出一个功能完善的 CRUD 页面，下面为你演示如何快速创建一个默认的用户管理面板。
 
-# 创建模型
+# 1.创建模型和迁移文件
 
 创建一个用户模型，并同时创建一个迁移文件。
 实际以下代码文件是框架自带的，你可以根据需要修改或跳过该步骤。
@@ -72,9 +72,9 @@ export default class extends BaseSchema {
 
 ```
 
-# 创建仓库
+# 2.创建模型仓库
 
-使用命令行创建一个后台模型仓库
+使用命令行创建一个用户模型仓库
 
 ```shell
 node ace admin:repository user
@@ -91,7 +91,7 @@ export default class UserRepository extends Repository {
 }
 ```
 
-# 创建控制器
+# 3.创建控制器
 
 使用命令行创建一个后台控制器
 
@@ -139,7 +139,7 @@ export default class UsersController extends Resource {
 }
 ```
 
-# 创建路由
+# 4.注册路由
 
 在 `app/admin/routes.ts` 的 `group` 方法中定义路由
 
@@ -147,9 +147,34 @@ export default class UsersController extends Resource {
 router.resource('users', UsersController).as('users')
 ```
 
-登录后台添加菜单
+# 5.添加权限
+使用管理员账号登录后台，进入权限管理页面新增并填入
 
-名称：用户管理
-标识：/admin/users
+一级权限为包含增、删、改、查：
+```
+权限名称：用户管理
+权限标识：admin.users
+权限排序：0
+上级权限：按需选择
+```
+如需细分权限可按路由表配置权限标识
+```
+admin.users.index  主页权限
+amdin.users.store  新增权限
+admin.users.update 更新权限
+admin.users.destroy  删除权限
+admin.users.create  创建页面权限
+admin.users.edit  编辑页面权限
+admin.users.show  详情页面权限
+```
 
-并将菜单赋值给 `admin` 管理员用户，刷新页面即可
+
+# 6.添加菜单
+
+使用管理员账号登录后台，进入菜单管理页面新增并填入
+```
+菜单名称：用户管理
+菜单标识：/admin/users
+```
+# 完成开发
+将权限和菜单赋值给管理员或目标角色，刷新后台即可
