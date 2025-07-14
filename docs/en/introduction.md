@@ -9,7 +9,7 @@ Built with `TypeScript`, with type hints throughout. Rich NPM ecosystem, truly a
 
 # Reading Suggestions
 If you are new to `EaseAdmin`, be sure to read the official documentation of [AdonisJS](https://docs.adonisjs.com/guides/preface/introduction) and [Amis](https://baidu.github.io/amis/en-US/docs/index), which will give you an overall understanding of `EaseAdmin`.
-If you already掌握 the basic concepts of `EaseAdmin` and have some development experience, please refer to the component documentation.
+If you already the basic concepts of `EaseAdmin` and have some development experience, please refer to the component documentation.
 
 # Built-in Features
 * Account Management

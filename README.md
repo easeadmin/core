@@ -3,66 +3,48 @@
   <h1 align="center">EaseAdmin</h1>
   <h4 align="center">Admin Panel Based on AdonisJS & Amis</h4>
 
-[amis](https://baidu.github.io/amis/zh-CN/docs/index) |
-[adonisjs](https://docs.adonisjs.com/guides/preface/introduction)
-
+[Chiness Guide](https://github.com/easeadmin/core/tree/main/docs/zh/introduction.md) |
+[English Guide](https://github.com/easeadmin/core/tree/main/docs/en/introduction.md) |
+[Amis Guide](https://baidu.github.io/amis/zh-CN/docs/index) |
+[AdonisJS Guide](https://docs.adonisjs.com/guides/preface/introduction) |
+[Issues](https://github.com/easeadmin/core/issues) |
+[Discussions](https://github.com/orgs/easeadmin/discussions)
 </div>
 
-EaseAdmin is the simplest and fastest way to build production-ready admin panels using `Typescript`.
+# Introduction
 
-Based on `Adonisjs` package, truly achieving full stack development
+`EaseAdmin` is a production-grade admin panel developed based on `AdonisJS` and `Amis`, which can reduce page development workload and greatly improve efficiency.
 
-# 🚀 Quick Start
+# Why Choose EaseAdmin
+Based on the `AdonisJS` framework, adopting the classic MVC design pattern, it is fast and flexible, and friendly to backend developers.
+Using the `Amis` low-code solution, you can create professional and complex backend interfaces without knowing frontend development, which is impossible with all other frontend UI libraries.
+Built with `TypeScript`, with type hints throughout. Rich NPM ecosystem, truly an All-in-One full-stack development framework.
 
-First, you need to install the `AdonisJS`. If you have already installed it, you can skip this step. If this is your first time using `AdonisJS`, be sure to read the document [Adonisjs V6](https://docs.adonisjs.com/guides/preface/introduction)
+# Reading Suggestions
+If you are new to `EaseAdmin`, be sure to read the official documentation of [AdonisJS](https://docs.adonisjs.com/guides/preface/introduction) and [Amis](https://baidu.github.io/amis/en-US/docs/index), which will give you an overall understanding of `EaseAdmin`.
+If you already the basic concepts of `EaseAdmin` and have some development experience, please refer to the component documentation.
 
-> Are you more of a visual learner? - Checkout the [Let's Learn AdonisJS 6](https://adocasts.com/series/lets-learn-adonisjs-6) free screencasts series from our friends at Adocasts.
+# Built-in Features
+* Account Management
+* Role Management
+* Permission Management
+* Menu Management
+* Multi-language Management
+* Code Generator
 
-```
-npm init adonisjs@latest hello-world
-```
+# Development Process
+See the complete development process example
 
-Follow the prompts to complete the installation.
+[Chiness Guide](https://github.com/easeadmin/core/tree/main/docs/en/developcase.md)
 
-> It is recommended to choose sqlite as the development environment database
+[English Guide](https://github.com/easeadmin/core/tree/main/docs/en/developcase.md)
 
-Add the EaseAdmin extension package to AdonisJS
+1. Create model and database migration
+2. Create model repository
+3. Create controller
+4. Register route
+5. Add permission
+6. Add menu
 
-```
-node ace add @easeadmin/core
-```
-
-### Publish the static files.
-
-normally, you don’t need to publish manually because the add command has been automatically published.
-
-```
-node ace configure @easeadmin/core
-```
-
-### Create your admin program
-
-By default it is `admin` you can also pass on other names like: `node ace admin:create tenant` create multiple admin program
-
-```
-node ace admin:create
-```
-
-### Create database and superadmin user
-
-login with `admin/admin`
-
-```
-node ace migration:run
-node ace db:seed
-```
-
-### Starting the development server
-
-You may start the development server by running the node ace serve command.
-
-> visit `http://localhost:3333/admin/home` to view your application in browser
-
-```
-node ace serve
-```
+# 💖 Show Your Support
+Please ⭐️ this repository if this project helped you
