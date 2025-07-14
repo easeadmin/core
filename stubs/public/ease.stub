@@ -172,10 +172,10 @@ const ease = new (function () {
     }
   }
 
-  this.storage = function(key,data){
-    if(data){
-      localStorage.setItem(key,JSON.stringify(data))
-    }else{
+  this.storage = function (key, data) {
+    if (data) {
+      localStorage.setItem(key, JSON.stringify(data))
+    } else {
       return JSON.parse(localStorage.getItem(key))
     }
   }
@@ -187,23 +187,27 @@ const ease = new (function () {
   }
 
   this.render = (schema, props = {}, env = {}) => {
-    const settings = this.storage('settings')
-    if (settings) {
-      props.context = props.context ?? {}
-      props.context.settings = settings
-      if (settings.locale) {
-        props.locale = settings.locale
+    const client = this.storage('settings')
+    if (!client) {
+      if (props.context && props.context.client) {
+        client = props.context.client
+      } else {
+        client = {}
       }
-      let theme = env.theme ?? 'cxd'
-      env.theme = nowTheme(settings.theme ?? theme, settings.darkness)
-    } else {
-      let theme = env.theme ?? 'cxd'
-      props.locale = window.navigator.languages[0]
-      if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-        theme = 'dark'
-      }
-      env.theme = nowTheme(theme)
     }
+    if (client.theme === undefined) {
+      client.theme = 'cxd'
+    }
+    if (client.locale === undefined) {
+      client.locale = window.navigator.languages[0]
+    }
+    if (client.darkness === undefined) {
+      client.darkness = !!window.matchMedia('(prefers-color-scheme: dark)').matches
+    }
+    props.locale = client.locale
+    env.theme = nowTheme(client.theme, client.darkness)
+
+    // init the amis app
     if (schema.type === 'app') {
       env.updateLocation = updateLocation
       env.isCurrentUrl = isCurrentUrl

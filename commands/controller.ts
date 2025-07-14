@@ -56,5 +56,10 @@ export default class CreateCommand extends BaseCommand {
       columns: columns,
       name: this.name,
     })
+    await codemods.makeUsingStub(stubsRoot, '/make/lang.stub', {
+      controller: controller,
+      columns: columns,
+      name: this.name,
+    })
   }
 }

@@ -9,6 +9,10 @@ export default defineConfig({
     excepts: [],
     permission: true,
   },
+  client: {
+    theme: 'cxd',
+    darkness: true,
+  },
   upload: {
     driver: 'fs',
     maxsize: '2mb',

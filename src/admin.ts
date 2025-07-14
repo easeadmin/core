@@ -324,6 +324,10 @@ export default class Admin {
       if (await this.isAdministrator()) {
         return true
       } else {
+        let home = this.identifier('auth_home.index')
+        if (slug === home) {
+          return true
+        }
         let permissions = await this.getPermissions()
         for (let item of permissions) {
           if (slug.indexOf(item.slug) === 0) {

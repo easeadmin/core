@@ -4,6 +4,10 @@ export type AdminConfig = {
     excepts: string[]
     permission: boolean
   }
+  client: {
+    theme: string
+    darkness: boolean
+  }
   upload: {
     driver: string
     maxsize: string

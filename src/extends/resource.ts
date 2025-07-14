@@ -184,7 +184,10 @@ export default abstract class Resource {
       return this.success({ total: result.total, items: result.all() })
     }
 
-    return render(this.schema().toJSON(), { title: this.ctx.admin.t('title') })
+    return render(this.schema().toJSON(), {
+      title: this.ctx.admin.t('title'),
+      props: { context: this.ctx.admin.config.client },
+    })
   }
 
   /**
@@ -195,7 +198,10 @@ export default abstract class Resource {
       return this.success(amis('page').body(this.creator()).toJSON())
     }
 
-    return render(amis('page').body(this.creator()).toJSON(), { title: this.ctx.admin.t('title') })
+    return render(amis('page').body(this.creator()).toJSON(), {
+      title: this.ctx.admin.t('title'),
+      props: { context: this.ctx.admin.config.client },
+    })
   }
 
   /**
@@ -207,7 +213,10 @@ export default abstract class Resource {
       return this.success(amis('page').body(this.editor()).toJSON())
     }
 
-    return render(amis('page').body(this.editor()).toJSON(), { title: this.ctx.admin.t('title') })
+    return render(amis('page').body(this.editor()).toJSON(), {
+      title: this.ctx.admin.t('title'),
+      props: { context: this.ctx.admin.config.client },
+    })
   }
 
   /**
@@ -219,7 +228,10 @@ export default abstract class Resource {
       return this.success(amis('page').body(this.detail()).toJSON())
     }
 
-    return render(amis('page').body(this.detail()).toJSON(), { title: this.ctx.admin.t('title') })
+    return render(amis('page').body(this.detail()).toJSON(), {
+      title: this.ctx.admin.t('title'),
+      props: { context: this.ctx.admin.config.client },
+    })
   }
 
   /**

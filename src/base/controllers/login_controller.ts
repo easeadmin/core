@@ -121,7 +121,10 @@ export default class UserController extends Resource {
   }
 
   async index() {
-    return render(this.schema(), { title: this.ctx.admin.t('login_title') })
+    return render(this.schema(), {
+      title: this.ctx.admin.t('login_title'),
+      props: { context: this.ctx.admin.config.client },
+    })
   }
 
   async create() {

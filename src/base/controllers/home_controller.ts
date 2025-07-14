@@ -14,52 +14,14 @@ export default class UserController extends Resource {
   }
 
   /**
-   * user menus
+   * all menus
    */
   private async pages() {
-    // admin menus
-    let admin = [
-      amis('app_item')
-        .label(this.ctx.admin.t('main'))
-        .children([
-          amis('app_item')
-            .label(this.ctx.admin.t('dashboard'))
-            .url('auth.home')
-            .isDefaultPage(true)
-            .icon('dashboard')
-            .schemaApi(this.ctx.admin.api(this.ctx.admin.route('auth_home.index'), 'schema')),
-          amis('app_item')
-            .label(this.ctx.admin.t('setting'))
-            .icon('cog')
-            .children([
-              amis('app_item')
-                .label(this.ctx.admin.t('user'))
-                .url('auth.user')
-                .schemaApi(this.ctx.admin.api(this.ctx.admin.route('auth_user.index'), 'schema')),
-              amis('app_item')
-                .label(this.ctx.admin.t('role'))
-                .url('auth.role')
-                .schemaApi(this.ctx.admin.api(this.ctx.admin.route('auth_role.index'), 'schema')),
-              amis('app_item')
-                .label(this.ctx.admin.t('menu'))
-                .url('auth.menu')
-                .schemaApi(this.ctx.admin.api(this.ctx.admin.route('auth_menu.index'), 'schema')),
-              amis('app_item')
-                .label(this.ctx.admin.t('permission'))
-                .url('auth.permission')
-                .schemaApi(
-                  this.ctx.admin.api(this.ctx.admin.route('auth_permission.index'), 'schema')
-                ),
-            ]),
-        ]),
-    ]
-
-    // system menus
     let menus = await this.ctx.admin.getMenus()
     let jsons = menus.map((item) => {
       let menu = amis('app_item')
         .label(item.name)
-        .visible(item.hidden === 0)
+        .visible(item.visible)
         .icon(item.icon)
         .attr('id', item.id)
         .attr('parentId', item.parentId)
@@ -69,12 +31,6 @@ export default class UserController extends Resource {
       return menu.toJSON()
     })
     let trees = this.ctx.admin.makeTrees(jsons)
-
-    // combine admin menus
-    if (await this.ctx.admin.isAdministrator()) {
-      trees = admin.concat(trees)
-    }
-
     return trees
   }
 
@@ -204,7 +160,11 @@ export default class UserController extends Resource {
       .pages(await this.pages())
     let css =
       '<style>.avatar-sm img{width:2rem;height:2rem;border-radius:100%;overflow:hidden;margin-right:0.5rem;margin-right:10px !important}</style>'
-    return render(home.toJSON(), { title: this.ctx.admin.t('title'), inject: css })
+    return render(home.toJSON(), {
+      title: this.ctx.admin.t('title'),
+      inject: css,
+      props: { context: this.ctx.admin.config.client },
+    })
   }
 
   /**
