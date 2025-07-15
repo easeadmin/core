@@ -1,7 +1,8 @@
 {
   "name": "@easeadmin/core",
   "description": "EaseAdmin Framework",
-  "version": "1.0.0",
+  "version": "1.0.2",
+  "homepage": "https://github.com/easeadmin",
   "engines": {
     "node": ">=20.6.0"
   },
@@ -63,6 +64,10 @@
   ],
   "author": "Leon",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/easeadmin/core"
+  },
   "devDependencies": {
     "@adonisjs/assembler": "^7.8.2",
     "@adonisjs/core": "^6.12.0",
