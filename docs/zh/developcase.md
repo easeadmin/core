@@ -148,6 +148,7 @@ router.resource('users', UsersController).as('users')
 ```
 
 # 5.添加权限
+
 使用管理员账号登录后台，进入权限管理页面新增并填入
 
 一级权限为包含增、删、改、查：
@@ -177,4 +178,5 @@ admin.users.show  详情页面权限
 菜单标识：/admin/users
 ```
 # 完成开发
+
 将权限和菜单赋值给管理员或目标角色，刷新后台即可

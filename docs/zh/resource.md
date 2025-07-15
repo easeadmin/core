@@ -1,6 +1,7 @@
 控制器 `Resource` 实现了 `Resource Controller` 中完整的 CRUD 方法，并且为你构造了一个功能完善的 CRUD 表格。
 
 # Resource 路由
+
 |     方法      |    Uri    |    Method    |    功能描述    |    路由    |
 | :---------- | :----------------- | :--------------: | :--------------: | :--------------: |
 | index() | /resource | GET | 列表页面构建 & 分页数据获取 & 页面渲染 | resource.index |
@@ -12,7 +13,9 @@
 | destroy() | /resource/:id | DELETE  | 删除数据 | resource.destroy |
 
 # 页面构建方法
+
 控制器需要实现以下方法来构建页面
+
 ```typescript
 @inject()
 export default abstract class Resource {
@@ -60,7 +63,9 @@ export default abstract class Resource {
 ```
 
 # 自定义页面构建方法
+
 以上方法为控制器 `Resource` 提供了默认的 CRUD 页面构建，你可以根据需要自定义页面构建方法。
+
 ```typescript
 export default abstract class Resource {
   // 自定义操作按钮

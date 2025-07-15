@@ -1,6 +1,7 @@
 EaseAdmin 命令行工具，提供了丰富的 `ace` 命令来简化开发和维护工作。您可以使用 `node ace list` 查看所有可用的命令。
 
 # 创建后台程序
+
 您可以使用 `node ace admin:create [name] [--force]` 命令创建一个后台程序。
 后台程序的名称将会作为目录名、配置文件名、模型文件名、以及路由前缀存在且不可更改，建议使用小写字母和下划线命名。
 
@@ -11,6 +12,7 @@ EaseAdmin 命令行工具，提供了丰富的 `ace` 命令来简化开发和维
 | --force | false | 是否强制覆盖 |
 
 # 创建模型仓库
+
 您可以使用 `node ace admin:repository [repository] [--model=] [--name=] [--force]` 命令创建一个模型仓库。
 模型仓库是是为后台程序提供支持的API层，建议一个模型对应一个仓库。
 
@@ -23,6 +25,7 @@ EaseAdmin 命令行工具，提供了丰富的 `ace` 命令来简化开发和维
 | --force | false | 是否强制覆盖 |
 
 # 创建控制器
+
 您可以使用 `node ace admin:controller [controller] [--repository=] [--name=] [--force]` 命令创建一个控制器。
 
 参数说明：

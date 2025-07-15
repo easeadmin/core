@@ -148,6 +148,7 @@ router.resource('users', UsersController).as('users')
 ```
 
 # 5. Add Permission
+
 Log in to the backend with an administrator account, go to the permission management page and add the following
 
 First-level permission including create, delete, update, query:
@@ -168,13 +169,15 @@ admin.users.edit  Edit page permission
 admin.users.show  Detail page permission
 ```
 
-
 # 6. Add Menu
 
 Log in to the backend with an administrator account, go to the menu management page and add the following
+
 ```
 Menu Name: User Management
 Menu Identifier: /admin/users
 ```
+
 # Complete Development
+
 Assign permissions and menus to administrators or target roles, then refresh the backend interface

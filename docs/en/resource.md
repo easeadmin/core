@@ -1,6 +1,7 @@
 The `Resource` controller implements complete CRUD methods in `Resource Controller` and constructs a fully functional CRUD table for you.
 
 # Resource Routes
+
 | Method      | Uri                | Method     | Description                          | Route           |
 | :---------- | :----------------- | :--------- | :----------------------------------- | :-------------- |
 | index()     | /resource          | GET        | List page construction & pagination data acquisition & page rendering | resource.index   |
@@ -12,6 +13,7 @@ The `Resource` controller implements complete CRUD methods in `Resource Controll
 | destroy()   | /resource/:id      | DELETE     | Delete data                          | resource.destroy |
 
 # Page Construction Methods
+
 The controller needs to implement the following methods to build pages
 ```typescript
 @inject()
@@ -60,6 +62,7 @@ export default abstract class Resource {
 ```
 
 # Custom Page Construction Methods
+
 The above methods provide default CRUD page construction for the `Resource` controller. You can customize page construction methods as needed.
 ```typescript
 export default abstract class Resource {
