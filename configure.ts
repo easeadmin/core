@@ -26,9 +26,9 @@ export async function configure(_command: ConfigureCommand) {
 
   // install i18n
   let i18n = await _command.prompt.ask('install i18n?')
-  if(i18n){
+  if (i18n) {
     await codemods.installPackages([{ name: '@adonisjs/i18n', isDevDependency: false }])
-    await _command.kernel.exec('node ace configure @adonisjs/i18n', [])
+    await _command.kernel.exec('configure', ['@adonisjs/i18n']);
   }
 
   // static files
