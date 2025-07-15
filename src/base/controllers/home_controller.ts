@@ -162,8 +162,8 @@ export default class UserController extends Resource {
 
     // app page render
     let home = amis('app')
-      .brandName(this.ctx.admin.t('brand'))
-      .logo(this.ctx.admin.t('logo'))
+      .brandName(this.ctx.admin.config.brand)
+      .logo(this.ctx.admin.config.logo)
       .header(this.headerToolbar())
       .pages(await this.pages())
     let css =

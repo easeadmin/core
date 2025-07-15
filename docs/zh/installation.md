@@ -2,7 +2,7 @@
 
 > 您更喜欢视觉学习吗？ - 观看在 Adocasts 的朋友制作的 [让我们学习 AdonisJS 6](https://adocasts.com/series/lets-learn-adonisjs-6) 视频系列。
 
-执行发下命令，按照提示完成安装，建议选择 `SQLite` 作为开发环境数据库。
+执行以下命令，按照提示完成安装，建议选择 `SQLite` 作为开发环境数据库。
 
 ```
 npm init adonisjs@latest hello-world

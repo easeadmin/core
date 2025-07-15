@@ -1,4 +1,6 @@
 export type AdminConfig = {
+  brand: string,
+  logo: string,
   auth: {
     guard: string[]
     excepts: string[]

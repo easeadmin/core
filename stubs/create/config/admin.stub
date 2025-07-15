@@ -4,6 +4,8 @@
 import { defineConfig } from '@easeadmin/core'
 
 export default defineConfig({
+  brand: 'EaseAdmin',
+  logo: "/ease/images/logo.png",
   auth: {
     guard: ['{{name}}'],
     excepts: [],
