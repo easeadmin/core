@@ -30,6 +30,7 @@ export function render(
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
     <link rel="stylesheet" href="${host}/ease/jssdk/iconfont.css" />
+    <link rel="icon" href="${host}/ease/images/favicon-32.ico" />
     ${inject}
     </head>
     <body style="margin:0;padding:0;height:100%">

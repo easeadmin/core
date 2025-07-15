@@ -2,8 +2,6 @@
     exports({ to: app.languageFilesPath(`zh/${name}/common.json`) })
 }}}
 {
-    "brand": "易思后台",
-    "logo": "/ease/images/logo.png",
     "are_you_sure_delete": "确定要删除吗？",
     "avatar": "头像",
     "bulk_delete": "批量删除",
