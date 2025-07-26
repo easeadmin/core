@@ -1,0 +1,10 @@
+{{{
+     exports({ to: app.makePath(`app/${name}/routes.ts`) })
+}}}
+import { Start } from '@easeadmin/core'
+import router from '@adonisjs/core/services/router'
+import HomeController from './controllers/home_controller.js'
+
+Start.make('admin').group(() => {
+  router.resource('/auth/home', HomeController).as('auth_home')
+})
