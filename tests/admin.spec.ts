@@ -49,7 +49,7 @@ test.group('Admin', async (group) => {
     await assert.fileExists('database/migrations/1744446870487_create_admin_users_table.ts')
     await assert.fileExists('database/seeders/create_admin_seed.ts')
     await assert.fileContains('config/auth.ts', `#models/admin`)
-    await assert.fileContains('start/routes.ts', `await import ('../app/admin/routes.js')`)
+    await assert.fileContains('start/routes.ts', `await import('../app/admin/routes.js')`)
 
     //controller
     const controllerCommand = await ace.create(ControllerCommand, ['user'])
