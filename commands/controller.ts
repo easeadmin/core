@@ -61,10 +61,11 @@ export default class ControllerCommand extends BaseCommand {
       name: this.name,
     })
     let languages: string[] = this.app.config.get(this.name + '.languages', [])
+    let except = ['id', 'createdAt', 'updatedAt', 'deletedAt']
     for (let lang of languages) {
       await codemods.makeUsingStub(stubsRoot, '/make/lang.stub', {
         controller: controller,
-        columns: columns,
+        columns: columns.filter((item) => !except.includes(item.name)),
         name: this.name,
         lang: lang,
       })

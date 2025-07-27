@@ -1,4 +1,4 @@
-{{#var controllerName = generators.controllerName(controller)}}
+{{#var controllerName = generators.controllerName(controller, true)}}
 {{#var modelName = generators.modelName(repository)}}
 {{{
   exports({ to: app.makePath(`app/${name}/controllers/${controller}_controller.ts`) })

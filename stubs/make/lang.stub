@@ -3,7 +3,7 @@
 }}}
 {
 {{#each columns as item }}
-    "{{item.name}}": "{{string.sentenceCase(item.label)}}",
+    "{{string.snakeCase(item.name)}}": "{{string.sentenceCase(item.label)}}",
 {{/each}}
     "{{controller}}": "{{controller}}"
 }

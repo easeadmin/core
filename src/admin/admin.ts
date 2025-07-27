@@ -16,7 +16,10 @@ export default class Admin {
     protected name: string,
     protected models: Record<string, LucidModel>
   ) {
-    this.controller = this.constructor.name.replaceAll('Controller', '').toLowerCase()
+    const handler: any = this.ctx.route!.handler
+    if (handler.name) {
+      this.controller = handler.name.split('Controller')[0].toLowerCase()
+    }
   }
 
   get title() {
@@ -148,8 +151,8 @@ export default class Admin {
     const ctx = this.ctx as any
     if ('i18n' in ctx) {
       let commonKey = `${this.name}.common.${key}`
+      let currentKey = `${this.name}.${this.controller}.${key}`
       if (this.controller !== '') {
-        let currentKey = `${this.name}.${this.controller}.${key}`
         translate = ctx.i18n.t(currentKey, data, key)
         if (translate === key) {
           translate = ctx.i18n.t(commonKey, data, key)
@@ -160,7 +163,7 @@ export default class Admin {
       if (translate === key) {
         translate = fallback ?? string.sentenceCase(key)
         if (app.inDev) {
-          console.log(`translation missing: ${key}`)
+          console.log(`translation missing: ${key} in ${this.controller}`)
         }
       }
     } else {
