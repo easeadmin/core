@@ -1,3 +1,4 @@
+import { CommandOptions } from '@adonisjs/core/types/ace'
 import { BaseCommand, args, flags } from '@adonisjs/core/ace'
 import { resolve } from 'node:path'
 import fs from 'node:fs'
@@ -5,6 +6,9 @@ import fs from 'node:fs'
 export default class ControllerCommand extends BaseCommand {
   static commandName = 'admin:controller'
   static description = 'Create a admin application'
+  static options: CommandOptions = {
+    startApp: true,
+  }
 
   @args.string({ description: 'Controller Name' })
   declare controller: string
@@ -56,10 +60,14 @@ export default class ControllerCommand extends BaseCommand {
       columns: columns,
       name: this.name,
     })
-    await codemods.makeUsingStub(stubsRoot, '/make/lang.stub', {
-      controller: controller,
-      columns: columns,
-      name: this.name,
-    })
+    let languages: string[] = this.app.config.get(this.name + '.languages', [])
+    for (let lang of languages) {
+      await codemods.makeUsingStub(stubsRoot, '/make/lang.stub', {
+        controller: controller,
+        columns: columns,
+        name: this.name,
+        lang: lang,
+      })
+    }
   }
 }

@@ -31,7 +31,7 @@ which can reduce page development workload and greatly improve efficiency.
 # Quick Start
 
 ```shell
-npm init adonisjs@latest -- -K=api
+npm init adonisjs@latest -- -K=web
 node ace add @easeadmin/core
 node ace admin:create
 node ace migration:run

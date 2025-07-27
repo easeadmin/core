@@ -16,7 +16,11 @@ export default class Admin {
     protected name: string,
     protected models: Record<string, LucidModel>
   ) {
-    this.controller = this.constructor.name.replaceAll('Controller', '')
+    this.controller = this.constructor.name.replaceAll('Controller', '').toLowerCase()
+  }
+
+  get title() {
+    return this.controller === '' ? 'untitled' : this.controller
   }
 
   /**

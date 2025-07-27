@@ -24,6 +24,7 @@
     "captcha": "验证码",
     "remember_me": "记住我",
     "title": "标题",
+    "untitled": "无标题",
     "nickname": "昵称",
     "old_password": "旧密码",
     "new_password": "新密码",

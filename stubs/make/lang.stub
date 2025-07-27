@@ -1,9 +1,9 @@
 {{{
-    exports({ to: app.languageFilesPath(`en/${name}/${controller}.json`) })
+    exports({ to: app.languageFilesPath(`${lang}/${name}/${controller}.json`) })
 }}}
 {
 {{#each columns as item }}
     "{{item.name}}": "{{string.sentenceCase(item.label)}}",
 {{/each}}
-    "title": "{{controller}}"
+    "{{controller}}": "{{controller}}"
 }

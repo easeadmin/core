@@ -14,7 +14,7 @@ export default abstract class Controller {
    */
   protected render(data: Record<string, any>, options: Record<string, any> = {}) {
     return html(data, {
-      title: this.ctx.admin.t('title'),
+      title: this.ctx.admin.t(this.ctx.admin.title),
       props: { context: this.ctx.admin.settings() },
       env: { enableAMISDebug: this.ctx.admin.config.client.debug },
       ...options,

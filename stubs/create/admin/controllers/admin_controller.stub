@@ -1,10 +1,10 @@
 {{{
-    exports({ to: app.makePath(`app/${name}/controllers/home_controller.ts`) })
+    exports({ to: app.makePath(`app/${name}/controllers/admin_controller.ts`) })
 }}}
-import AdminController from '@easeadmin/core/admin/controllers/admin_controller'
+import Controller from '@easeadmin/core/admin/controllers/admin_controller'
 import amis from '@easeadmin/core/builder/amis'
 
-export default class HomeController extends AdminController {
+export default class AdminController extends Controller {
   protected builder() {
     return amis('page')
       .initApi(this.ctx.admin.api('show'))
