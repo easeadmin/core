@@ -230,14 +230,16 @@ export default class Admin {
     if (method !== 'get' && 'csrfToken' in this.ctx.request) {
       headers['x-csrf-token'] = this.ctx.request.csrfToken as string
     }
-    if (url === '' || url.substring(0, 1) === '?') {
+    let first = url.substring(0, 1)
+    let idmethods = ['show', 'edit', 'update', 'delete']
+    if (url === '' || first === '?' || first === '$') {
       let id = this.ctx.request.param(paramKey)
       let now = this.ctx.request.url() ?? ''
       let current = (id ? now.replace(`/${id}`, '') : now).replace(new RegExp('[/ ]+$'), '')
-      if (action === 'show' || action === 'edit' || action === 'update' || action === 'delete') {
-        url = current + '/${id}' + url
-      } else if (url.substring(0, 1) === '$') {
+      if (first === '$') {
         url = current + '/' + url
+      } else if (idmethods.includes(action)) {
+        url = current + '/${id}' + url
       } else {
         url = current + url
       }
