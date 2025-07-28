@@ -54,4 +54,8 @@ export default class PermissionController extends ResourceController {
         .source(this.ctx.admin.api('options')),
     ]
   }
+
+  protected footerToolbar() {
+    return []
+  }
 }

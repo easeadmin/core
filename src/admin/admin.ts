@@ -209,8 +209,6 @@ export default class Admin {
       | 'store'
       | 'update'
       | 'delete'
-      | 'forceDelete'
-      | 'restore'
       | 'schema',
     url: string = '',
     paramKey = 'id'
@@ -225,8 +223,6 @@ export default class Admin {
       store: 'post',
       update: 'put',
       delete: 'delete',
-      forceDelete: 'delete',
-      restore: 'delete',
       schema: 'get',
     }
     let method = methods[action]
@@ -238,18 +234,15 @@ export default class Admin {
       let id = this.ctx.request.param(paramKey)
       let now = this.ctx.request.url() ?? ''
       let current = (id ? now.replace(`/${id}`, '') : now).replace(new RegExp('[/ ]+$'), '')
-      if (
-        action === 'show' ||
-        action === 'edit' ||
-        action === 'update' ||
-        action === 'delete' ||
-        action === 'forceDelete' ||
-        action === 'restore'
-      ) {
-        let edit = action === 'edit' ? '/edit' : ''
-        url = current + '/${id}' + edit + url
+      if (action === 'show' || action === 'edit' || action === 'update' || action === 'delete') {
+        url = current + '/${id}' + url
+      } else if (url.substring(0, 1) === '$') {
+        url = current + '/' + url
       } else {
         url = current + url
+      }
+      if (action === 'edit') {
+        url = url + '/edit'
       }
     }
     return { url: url, method: method, headers: headers }
