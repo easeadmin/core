@@ -64,7 +64,7 @@ export default abstract class ResourceController extends Controller {
         .filterTogglable(true)
         .filterDefaultVisible(false)
         .defaultParams(this.defaultParams)
-        .footerToolbar(['statistics', 'switch-per-page', 'pagination'])
+        .footerToolbar(this.footerToolbar())
         .bulkActions(this.bulkActions())
         .headerToolbar(this.headerToolbar())
         .filter(this.filter())
@@ -132,7 +132,7 @@ export default abstract class ResourceController extends Controller {
   protected bulkActions(): schema<any>[] {
     return [
       amis('action')
-        .api(this.ctx.admin.api('delete'))
+        .api(this.ctx.admin.api('delete', '${ids}'))
         .permission(this.showBulkDeleteButton)
         .label(this.ctx.admin.t('bulk_delete'))
         .confirmText(this.ctx.admin.t('are_you_sure_delete'))
@@ -155,6 +155,10 @@ export default abstract class ResourceController extends Controller {
         .align('right')
         .level('primary'),
     ]
+  }
+
+  protected footerToolbar(): any[] {
+    return ['statistics', 'switch-per-page', 'pagination']
   }
 
   /**

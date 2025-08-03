@@ -190,7 +190,7 @@ export default class Crud extends Table {
     return this
   }
 
-  footerToolbar(footerToolbar: string[]) {
+  footerToolbar(footerToolbar: any[]) {
     this.json['footerToolbar'] = footerToolbar
     return this
   }

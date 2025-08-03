@@ -70,4 +70,8 @@ export default class MenuController extends ResourceController {
         .value(1),
     ]
   }
+
+  protected footerToolbar() {
+    return []
+  }
 }

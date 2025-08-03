@@ -24,6 +24,11 @@ export default class Event {
     return this
   }
 
+  args(args: object) {
+    this.json['args'] = args
+    return this
+  }
+
   dataMergeMode(dataMergeMode: 'merge' | 'override') {
     this.json['dataMergeMode'] = dataMergeMode
     return this
