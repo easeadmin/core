@@ -16,9 +16,11 @@ export default class Admin {
     protected name: string,
     protected models: Record<string, LucidModel>
   ) {
-    const handler: any = this.ctx.route!.handler
-    if (handler.name) {
-      this.controller = handler.name.split('Controller')[0].toLowerCase()
+    if (this.ctx.route && this.ctx.route.handler) {
+      const handler: any = this.ctx.route.handler
+      if (handler.name) {
+        this.controller = handler.name.split('Controller')[0].toLowerCase()
+      }
     }
   }
 
