@@ -3,8 +3,8 @@
 {{{
   exports({ to: app.makePath(`app/${name}/controllers/${controller}_controller.ts`) })
 }}}
-import amis from '@easeadmin/core/builder/amis'
-import ResourceController from '@easeadmin/core/controllers/resource_controller'
+import amis from 'easeadmin/builder/amis'
+import ResourceController from 'easeadmin/controllers/resource_controller'
 import {{modelName}}Repository from '../repositories/{{repository}}_repository.js'
 
 export default class {{controllerName}} extends ResourceController {

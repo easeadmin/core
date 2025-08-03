@@ -1,5 +1,5 @@
 {
-  "name": "@easeadmin/core",
+  "name": "easeadmin",
   "description": "EaseAdmin is a NodeJS Administrator Panels Based on AdonisJS and Amis",
   "version": "1.0.0",
   "homepage": "https://github.com/easeadmin",

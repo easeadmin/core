@@ -21,7 +21,7 @@ export async function configure(_command: ConfigureCommand) {
   // register commands or middlewares
   const codemods = await _command.createCodemods()
   await codemods.updateRcFile((rcFile) => {
-    rcFile.addCommand('@easeadmin/core/commands')
+    rcFile.addCommand('easeadmin/commands')
   })
 
   // install i18n

@@ -1,7 +1,7 @@
 {{{
      exports({ to: app.makePath(`app/${name}/routes.ts`) })
 }}}
-import { Start } from '@easeadmin/core'
+import { Start } from 'easeadmin'
 import router from '@adonisjs/core/services/router'
 import AdminController from './controllers/admin_controller.js'
 

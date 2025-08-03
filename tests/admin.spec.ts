@@ -33,7 +33,7 @@ test.group('Admin', async (group) => {
     await configureCommand.exec()
     configureCommand.assertSucceeded()
     await assert.fileExists('adonisrc.ts')
-    await assert.fileContains('adonisrc.ts', '@easeadmin/core/commands')
+    await assert.fileContains('adonisrc.ts', 'easeadmin/commands')
     await assert.fileExists('public/ease/images')
     await assert.fileExists('public/ease/jssdk')
     await assert.fileExists('public/ease/ease.js')

@@ -3,14 +3,14 @@
 <h1 align="center">EaseAdmin</h1>
 <h4 align="center">Admin Panel Based on AdonisJS & Amis</h4>
 
-[Guide](https://github.com/easeadmin/) |
+[Guide](https://github.com/easeadmin) |
 [Issues](https://github.com/easeadmin/core/issues) |
 [Discussions](https://github.com/orgs/easeadmin/discussions)
 
 <a href="https://nodejs.org/"><img src="https://img.shields.io/badge/NODEJS-20.0%2B-%23268af1"></a>
 <a href="https://adonisjs.com/"><img src="https://img.shields.io/badge/AdonisJS-6.0%2B-%23268af1"></a>
 <a href="https://aisuda.bce.baidu.com/amis/zh-CN/docs/index"><img src="https://img.shields.io/badge/Amis-6.0%2B-%23268af1"></a>
-<a href="https://www.npmjs.com/package/@easeadmin/core"><img src="https://img.shields.io/badge/license-MIT-%23268af1"></a>
+<a href="https://www.npmjs.com/package/easeadmin"><img src="https://img.shields.io/badge/license-MIT-%23268af1"></a>
 
 </div>
 
@@ -32,7 +32,7 @@ which can reduce page development workload and greatly improve efficiency.
 
 ```shell
 npm init adonisjs@latest -- -K=web
-node ace add @easeadmin/core
+node ace add easeadmin
 node ace admin:create
 node ace migration:run
 node ace db:seed

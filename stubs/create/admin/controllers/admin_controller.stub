@@ -1,8 +1,8 @@
 {{{
     exports({ to: app.makePath(`app/${name}/controllers/admin_controller.ts`) })
 }}}
-import Controller from '@easeadmin/core/admin/controllers/admin_controller'
-import amis from '@easeadmin/core/builder/amis'
+import Controller from 'easeadmin/admin/controllers/admin_controller'
+import amis from 'easeadmin/builder/amis'
 
 export default class AdminController extends Controller {
   protected builder() {
