@@ -30,12 +30,17 @@ which can reduce page development workload and greatly improve efficiency.
 
 # Quick Start
 
+Create a adonisjs project
+
 ```shell
 npm init adonisjs@latest -- -K=web
+```
+
+Install easeadmin
+
+```shell
 node ace add easeadmin
-node ace admin:create
-node ace migration:run
-node ace db:seed
+node ace admin:install admin --migrate
 ```
 
 # Contributing

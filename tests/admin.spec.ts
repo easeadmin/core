@@ -4,7 +4,8 @@ import { HttpContextFactory } from '@adonisjs/core/factories/http'
 import Configure from '@adonisjs/core/commands/configure'
 import RepositoryCommand from '../commands/repository.js'
 import ControllerCommand from '../commands/controller.js'
-import CreateCommand from '../commands/create.js'
+import InstallCommand from '../commands/install.js'
+import UninstallCommand from '../commands/uninstall.js'
 import {
   BASE_URL,
   User,
@@ -40,9 +41,9 @@ test.group('Admin', async (group) => {
     await assert.fileExists('public/ease/history.js')
 
     // create
-    const createCommand = await ace.create(CreateCommand, ['admin', '--force'])
-    await createCommand.exec()
-    createCommand.assertSucceeded()
+    const installCommand = await ace.create(InstallCommand, ['admin', '--force'])
+    await installCommand.exec()
+    installCommand.assertSucceeded()
     await assert.fileExists('app/admin')
     await assert.fileExists('config/admin.ts')
     await assert.fileExists('app/models/admin.ts')
@@ -62,6 +63,16 @@ test.group('Admin', async (group) => {
     await repositoryCommand.exec()
     repositoryCommand.assertSucceeded()
     assert.fileExists('app/admin/repositories/user_repository.ts')
+
+    // uninstall
+    const uninstallCommand = await ace.create(UninstallCommand, ['admin'])
+    await uninstallCommand.exec()
+    uninstallCommand.assertSucceeded()
+    await assert.fileNotExists('app/admin')
+    await assert.fileNotExists('config/admin.ts')
+    await assert.fileNotExists('app/models/admin.ts')
+    await assert.fileNotContains('config/auth.ts', `#models/admin`)
+    await assert.fileNotContains('start/routes.ts', `await import('../app/admin/routes.js')`)
   })
 
   test('start', async ({ assert }) => {

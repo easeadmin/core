@@ -1,20 +1,24 @@
+import { configProvider } from '@adonisjs/core'
 import { CommandOptions } from '@adonisjs/core/types/ace'
 import { BaseCommand, args, flags } from '@adonisjs/core/ace'
 import { resolve } from 'node:path'
 import fs from 'node:fs'
 
-export default class CreateCommand extends BaseCommand {
-  static commandName = 'admin:create'
-  static description = 'Create a admin application'
+export default class InstallCommand extends BaseCommand {
+  static commandName = 'admin:install'
+  static description = 'Install admin application'
   static options: CommandOptions = {
     startApp: true,
   }
 
-  @args.string({ description: 'Application Name', default: 'admin' })
+  @args.string({ description: 'Admin Name', default: 'admin' })
   declare name: string
 
-  @flags.boolean({ description: 'Force create', default: false })
+  @flags.boolean({ description: 'Force install', default: false })
   declare force: boolean
+
+  @flags.boolean({ description: 'Execute migrations concurrently', default: false })
+  declare migrate: boolean
 
   async run() {
     const stubsRoot = resolve(import.meta.dirname, '../stubs')
@@ -64,19 +68,31 @@ export default class CreateCommand extends BaseCommand {
     })
     codemods.overwriteExisting = true
     await codemods.makeUsingStub(stubsRoot, 'create/config/auth.stub', {
-      config: await this.makeAuthConfig(),
+      config: await this.updateAuthConfig(),
     })
 
+    // routes
     await this.updateRoutes()
+
+    // migration
+    if (this.migrate) {
+      await this.kernel.exec('migration:run', [])
+      await this.kernel.exec('db:seed', [])
+    } else {
+      this.logger.warning('You also need to run `node ace migration:up` and `node ace db:seed`')
+    }
   }
 
   // merge auth config
-  async makeAuthConfig() {
+  async updateAuthConfig() {
     let keys: string[] = []
-    let config: Record<string, any> = this.app.config.get('auth.guards', {})
-    for (let key in config) {
-      if (key !== 'web') {
-        keys.push(key)
+    const authConfigProvider = this.app.config.get('auth')
+    const config: any = await configProvider.resolve(this.app, authConfigProvider)
+    if (config) {
+      for (let key in config.guards) {
+        if (key !== 'web') {
+          keys.push(key)
+        }
       }
     }
     if (!keys.includes(this.name)) {

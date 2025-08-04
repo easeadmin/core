@@ -1,5 +1,5 @@
 {{{
-  exports({ to: app.seedersPath('create_admin_seed.ts') })
+  exports({ to: app.seedersPath(`create_${name}_seed.ts`) })
 }}}
 import { BaseSeeder } from '@adonisjs/lucid/seeders'
 import hash from '@adonisjs/core/services/hash'

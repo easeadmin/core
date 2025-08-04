@@ -3,7 +3,7 @@ import { resolve } from 'node:path'
 
 export default class RepositoryCommand extends BaseCommand {
   static commandName = 'admin:repository'
-  static description = 'Create a admin application'
+  static description = 'Create a resource repository'
 
   @args.string({ description: 'Repository Name' })
   declare repository: string

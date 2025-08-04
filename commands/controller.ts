@@ -5,7 +5,7 @@ import fs from 'node:fs'
 
 export default class ControllerCommand extends BaseCommand {
   static commandName = 'admin:controller'
-  static description = 'Create a admin application'
+  static description = 'Create a resource controller'
   static options: CommandOptions = {
     startApp: true,
   }
