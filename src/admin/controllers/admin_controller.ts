@@ -27,7 +27,7 @@ export default class AdminController extends ResourceController {
     return []
   }
 
-  protected header() {
+  protected header(): any {
     return amis('flex')
       .className('w-full')
       .justify('flex-end')

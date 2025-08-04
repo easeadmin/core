@@ -1,14 +1,14 @@
 import Api from './api.js'
 import Schema from './schema.js'
 import Remark from './remark.js'
-
+import { QueryType } from '../types.js'
 /**
  * form
  * @docs https://baidu.github.io/amis/zh-CN/components/form
  */
 export default class FormItem extends Schema<FormItem> {
   // ease function
-  filter(filter: string) {
+  filter(filter: QueryType) {
     this.json['filter'] = filter
     return this
   }

@@ -92,19 +92,19 @@ export default class ResourceRepository extends Repository<ResourceRepository> {
           query = query.where(key, params[key])
           break
         case QueryType.gt:
-          query = query.where(key, filters.gt, params[key])
+          query = query.where(key, QueryType.gt, params[key])
           break
         case QueryType.lt:
-          query = query.where(key, filters.lt, params[key])
+          query = query.where(key, QueryType.lt, params[key])
           break
         case QueryType.like:
-          query = query.whereLike(key, filters.like.replace('s', params[key]))
+          query = query.whereLike(key, QueryType.like.replace('s', params[key]))
           break
         case QueryType.llike:
-          query = query.whereLike(key, filters.llike.replace('s', params[key]))
+          query = query.whereLike(key, QueryType.llike.replace('s', params[key]))
           break
         case QueryType.rlike:
-          query = query.whereLike(key, filters.rlike.replace('s', params[key]))
+          query = query.whereLike(key, QueryType.rlike.replace('s', params[key]))
           break
         case QueryType.between:
           let value = params[key].split(',')

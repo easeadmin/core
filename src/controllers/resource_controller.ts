@@ -1,6 +1,7 @@
 import Repository from '../repositories/repository.js'
 import Controller from '../controllers/controller.js'
 import { schema } from '../builder/index.js'
+import { QueryType } from '../types.js'
 import amis from '../builder/amis.js'
 
 export default abstract class ResourceController extends Controller {
@@ -56,7 +57,10 @@ export default abstract class ResourceController extends Controller {
     if (operations) {
       columns.push(operations)
     }
-    return amis('page').body(
+    let header = this.header()
+    let footer = this.footer()
+    return amis('page').body([
+      ...header,
       amis('crud')
         .id('list')
         .api(this.ctx.admin.api('paginate'))
@@ -68,15 +72,24 @@ export default abstract class ResourceController extends Controller {
         .bulkActions(this.bulkActions())
         .headerToolbar(this.headerToolbar())
         .filter(this.filter())
-        .columns(columns)
-    )
+        .columns(columns),
+      ...footer,
+    ])
+  }
+
+  protected header(): any[] {
+    return []
+  }
+
+  protected footer(): any[] {
+    return []
   }
 
   /**
    * global filter fields
    */
   protected filters(): schema<any>[] {
-    return [amis('input_text').name('id').label('ID').filter('eq')]
+    return [amis('input_text').name('id').label('ID').filter(QueryType.eq)]
   }
 
   /**
