@@ -35,7 +35,7 @@ export default defineConfig({
     logo: '/ease/images/logo.png',
     router_mode: 'history',
     login_align: 'center',
-    login_side_image: '',
+    login_side_image: '/ease/images/bg.png',
     login_default_remember: true,
   },
   languages: ['en', 'zh'],
