@@ -220,14 +220,16 @@ const ease = new (function () {
     env.theme = nowTheme(context.theme, context.darkness)
 
     // init the amis app
-    env.updateLocation = updateLocation
-    env.isCurrentUrl = isCurrentUrl
-    env.jumpTo = jumpTo
-    history.listen((state) => {
-      this.amis.updateProps({
-        location: state.location || state,
+    if (schema.type === 'app') {
+      env.updateLocation = updateLocation
+      env.isCurrentUrl = isCurrentUrl
+      env.jumpTo = jumpTo
+      history.listen((state) => {
+        this.amis.updateProps({
+          location: state.location || state,
+        })
       })
-    })
+    }
 
     // amis instance
     let amis = amisRequire('amis/embed')
