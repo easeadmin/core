@@ -30,7 +30,7 @@ export default class LoginRepository extends Repository<LoginRepository> {
 
   async show() {
     const ctx: any = this.ctx
-    const svg = svgCaptcha.create({ color: true, height: 32 })
+    const svg = svgCaptcha.create({ color: true, height: 64 })
     ctx.session.put(this.sessionName, svg.text)
     ctx.response.type('.svg')
     return svg.data

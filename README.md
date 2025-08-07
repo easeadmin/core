@@ -30,26 +30,27 @@ which can reduce page development workload and greatly improve efficiency.
 
 # Quick Start
 
-Create a adonisjs project
+1. Create a adonisjs project
 
 ```shell
 npm init adonisjs@latest -- -K=web
 ```
 
-Install easeadmin
+2. Add easeadmin package
 
 ```shell
 node ace add easeadmin
+```
+
+3. Install admin and run migration
+```
 node ace admin:install admin --migrate
 ```
 
-# Contributing
-
-Please do not use npm link to link this library. It is recommended to use [yalc](https://github.com/wclr/yalc) for local installation.
-
+4. Run server
 ```shell
-npm i yalc -g
-yalc publish
+node ace serve --watch
+// visit http://localhost:3333/admin
 ```
 
 # 💖 Show Your Support
