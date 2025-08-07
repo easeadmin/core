@@ -79,7 +79,7 @@ export default class InstallCommand extends BaseCommand {
       await this.kernel.exec('migration:run', [])
       await this.kernel.exec('db:seed', [])
     } else {
-      this.logger.warning('You also need to run `node ace migration:up` and `node ace db:seed`')
+      this.logger.warning('You also need to run `node ace migration:run` and `node ace db:seed`')
     }
   }
 

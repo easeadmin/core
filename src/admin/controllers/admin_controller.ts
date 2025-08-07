@@ -188,8 +188,10 @@ export default class AdminController extends ResourceController {
       .brandName(this.ctx.admin.config.client.brand)
       .logo(this.ctx.admin.config.client.logo)
       .header(this.header())
-    let css =
-      '<style>.avatar-sm img{width:2rem;height:2rem;border-radius:100%;overflow:hidden;margin:0 !important;}</style>'
-    return super.render(page, { inject: css })
+    let append = `
+      <style>.avatar-sm img{width:2rem;height:2rem;border-radius:100%;overflow:hidden;margin:0 !important;}</style>
+      <script>const ROUTER_MODE = '${this.ctx.admin.config.client.router_mode}'</script>
+    `
+    return super.render(page, { inject: append })
   }
 }

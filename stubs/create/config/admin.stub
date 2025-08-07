@@ -33,6 +33,7 @@ export default defineConfig({
     darkness: true,
     brand: 'EaseAdmin',
     logo: '/ease/images/logo.png',
+    router_mode: 'history',
     login_align: 'center',
     login_side_image: '',
     login_default_remember: true,

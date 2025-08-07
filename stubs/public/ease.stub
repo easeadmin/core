@@ -2,7 +2,21 @@
   exports({ to: app.publicPath(`ease/ease.js`) })
 }}}
 const ease = new (function () {
-  const history = HistoryLibrary.createHashHistory()
+  const history = createHistory()
+
+  function createHistory() {
+    if (typeof (ROUTER_MODE) === 'string') {
+      if (ROUTER_MODE === 'hash') {
+        return HistoryLibrary.createHashHistory()
+      } else if (ROUTER_MODE === 'history') {
+        return HistoryLibrary.createBrowserHistory()
+      } else if (ROUTER_MODE === 'memory') {
+        return HistoryLibrary.createMemoryHistory()
+      }
+    }
+    return HistoryLibrary.createHashHistory()
+  }
+
   function normalizeLink(to, location = history.location) {
     to = to || ''
 
@@ -189,9 +203,9 @@ const ease = new (function () {
   this.render = (schema, props = {}, env = {}) => {
     let context = this.plainCookie('settings')
     if (!context) {
-      context = props.context?? {}
-    }else{
-      context = Object.assign(props.context?? {},context)
+      context = props.context ?? {}
+    } else {
+      context = Object.assign(props.context ?? {}, context)
     }
     if (context.theme === undefined) {
       context.theme = 'cxd'
@@ -206,17 +220,24 @@ const ease = new (function () {
     env.theme = nowTheme(context.theme, context.darkness)
 
     // init the amis app
-    if (schema.type === 'app') {
-      env.updateLocation = updateLocation
-      env.isCurrentUrl = isCurrentUrl
-      env.jumpTo = jumpTo
-      history.listen((state) => {
-        this.amis.updateProps({
-          location: state.location || state,
-        })
+    env.updateLocation = updateLocation
+    env.isCurrentUrl = isCurrentUrl
+    env.jumpTo = jumpTo
+    history.listen((state) => {
+      this.amis.updateProps({
+        location: state.location || state,
       })
-    }
+    })
+
+    // amis instance
     let amis = amisRequire('amis/embed')
     this.amis = amis.embed('#root', schema, props, env)
+
+    // jump to ref
+    const urlParams = new URLSearchParams(window.location.search)
+    const ref = urlParams.get('ref')
+    if (ref) {
+      jumpTo(ref)
+    }
   }
 })()

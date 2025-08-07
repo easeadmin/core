@@ -244,6 +244,10 @@ export default abstract class ResourceController extends Controller {
   }
 
   async create(): Promise<any> {
+    if (this.ctx.admin.config.client.router_mode === 'history') {
+      const path = this.ctx.request.parsedUrl.pathname
+      return this.ctx.response.redirect(this.ctx.admin.url('auth_home.index', { qs: { ref: path } }))
+    }
     return this.render(this.builder().toJSON())
   }
 
