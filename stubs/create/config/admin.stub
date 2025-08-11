@@ -1,0 +1,42 @@
+{{{
+  exports({ to: app.configPath(`${name}.ts`) })
+}}}
+import { defineConfig } from 'easeadmin'
+
+export default defineConfig({
+  auth: {
+    guard: ['{{name}}'],
+    excepts: [
+      '/${name}/auth/login',
+    ],
+    permission: true,
+  },
+  upload: {
+    driver: 'fs',
+    maxsize: '2mb',
+    extnames: ['jpg','png','jpeg'],
+  },
+  database: {
+    connection: '{{connection}}',
+    user_table: '{{name}}_users',
+    role_table: '{{name}}_role',
+    menu_table: '{{name}}_menus',
+    permission_table: '{{name}}_permissions',
+    user_role_table: '{{name}}_user_roles',
+    role_menu_table: '{{name}}_role_menus',
+    role_permission_table: '{{name}}_role_permissions',
+    user_remember_me_table: '{{name}}_remember_me_tokens',
+  },
+  client: {
+    debug: true,
+    theme: 'cxd',
+    darkness: true,
+    brand: 'EaseAdmin',
+    logo: '/ease/images/logo.png',
+    router_mode: 'history',
+    login_side_align: 'center',
+    login_side_image: '/ease/images/bg.png',
+    login_default_remember: true,
+  },
+  languages: ['en', 'zh'],
+})

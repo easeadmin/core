@@ -1,0 +1,254 @@
+{{{
+  exports({ to: app.publicPath(`ease/ease.js`) })
+}}}
+const ease = new (function () {
+  const history = createHistory()
+
+  function createHistory() {
+    if (typeof (ROUTER_MODE) === 'string') {
+      if (ROUTER_MODE === 'hash') {
+        return HistoryLibrary.createHashHistory()
+      } else if (ROUTER_MODE === 'history') {
+        return HistoryLibrary.createBrowserHistory()
+      } else if (ROUTER_MODE === 'memory') {
+        return HistoryLibrary.createMemoryHistory()
+      }
+    }
+    return HistoryLibrary.createHashHistory()
+  }
+
+  function normalizeLink(to, location = history.location) {
+    to = to || ''
+
+    if (to && to[0] === '#') {
+      to = location.pathname + location.search + to
+    } else if (to && to[0] === '?') {
+      to = location.pathname + to
+    }
+
+    const idx = to.indexOf('?')
+    const idx2 = to.indexOf('#')
+    let pathname = ~idx ? to.substring(0, idx) : ~idx2 ? to.substring(0, idx2) : to
+    let search = ~idx ? to.substring(idx, ~idx2 ? idx2 : undefined) : ''
+    let hash = ~idx2 ? to.substring(idx2) : location.hash
+
+    if (!pathname) {
+      pathname = location.pathname
+    } else if (pathname[0] != '/' && !/^https?:/.test(pathname)) {
+      let relativeBase = location.pathname
+      const paths = relativeBase.split('/')
+      paths.pop()
+      let m
+      while ((m = /^..?/.exec(pathname))) {
+        if (m[0] === '../') {
+          paths.pop()
+        }
+        pathname = pathname.substring(m[0].length)
+      }
+      pathname = paths.concat(pathname).join('/')
+    }
+
+    return pathname + search + hash
+  }
+
+  function isCurrentUrl(to, ctx) {
+    if (!to) {
+      return false
+    }
+    const pathname = history.location.pathname
+    const link = normalizeLink(to, {
+      ...location,
+      pathname,
+      hash: '',
+    })
+
+    if (!~link.indexOf('http') && ~link.indexOf(':')) {
+      let strict = ctx && ctx.strict
+      return match(link, {
+        decode: decodeURIComponent,
+        strict: typeof strict !== 'undefined' ? strict : true,
+      })(pathname)
+    }
+
+    return decodeURI(pathname) === link
+  }
+
+  function updateLocation(location, replace) {
+    location = normalizeLink(location)
+    if (location === 'goBack') {
+      return history.goBack()
+    } else if (
+      (!/^https?:/.test(location) &&
+        location === history.location.pathname + history.location.search) ||
+      location === history.location.href
+    ) {
+      // 目标地址和当前地址一样，不处理，免得重复刷新
+      return
+    } else if (/^https?:/.test(location) || !history) {
+      return (window.location.href = location)
+    }
+
+    history[replace ? 'replace' : 'push'](location)
+  }
+
+  function jumpTo(to, action) {
+    if (to === 'goBack') {
+      return history.goBack()
+    }
+
+    to = normalizeLink(to)
+
+    if (isCurrentUrl(to)) {
+      return
+    }
+
+    if (action && action.actionType === 'url') {
+      action.blank === false ? (window.location.href = to) : window.open(to, '_blank')
+      return
+    } else if (action && action.blank) {
+      window.open(to, '_blank')
+      return
+    }
+
+    if (/^https?:/.test(to)) {
+      window.location.href = to
+    } else if (
+      (!/^https?:/.test(to) && to === history.pathname + history.location.search) ||
+      to === history.location.href
+    ) {
+      // do nothing
+    } else {
+      history.push(to)
+    }
+  }
+
+  function jssdk(file) {
+    let links = document.querySelectorAll('link')
+    for (let link of links) {
+      if (link.href.indexOf('jssdk') > 0) {
+        let href = link.href.split('/')
+        href.pop()
+        href.push(file)
+        return href.join('/')
+      }
+    }
+    return file
+  }
+
+  function nowTheme(theme, darkness) {
+    if (darkness && theme != 'dark') {
+      const now = new Date()
+      const currentHour = now.getHours()
+      if (currentHour >= 18 || currentHour < 8) {
+        theme = 'dark'
+      }
+    }
+    let link = document.createElement('link')
+    link.href = jssdk(theme + '.css')
+    link.rel = 'stylesheet'
+    document.head.appendChild(link)
+    return theme
+  }
+
+  function nowLang(lang) {
+    if (lang.indexOf('zh') < 0 && lang.indexOf('en') < 0 && lang.indexOf('de') < 0) {
+      let script = document.createElement('script')
+      script.src = jssdk(lang + '.js')
+      document.head.appendChild(script)
+    }
+  }
+
+  this.refreshImage = function (dom) {
+    let src = dom.src
+    if (src.indexOf('_t') > -1) {
+      dom.src = src.split('_t')[0] += '_t' + new Date().getTime()
+    } else {
+      if (src.indexOf('?') > -1) {
+        dom.src = src + '&_t=' + new Date().getTime()
+      } else {
+        dom.src = src + '?_t=' + new Date().getTime()
+      }
+    }
+  }
+
+  this.plainCookie = function (key, data) {
+    if (data) {
+      let value = btoa(JSON.stringify({ message: data })).replaceAll('=', '')
+      let expires = new Date(Date.now() + 86400 * 365 * 1000)
+      document.cookie = key + '=' + value + '; expires=' + expires.toUTCString() + '; path=/'
+      window.location.reload()
+    } else {
+      let result = null
+      const cookies = document.cookie.split('; ')
+      for (let cookie of cookies) {
+        const [name, value] = cookie.split('=')
+        if (key === name) {
+          let item = JSON.parse(atob(value))
+          if (item.message) {
+            result = item.message
+          }
+          break
+        }
+      }
+      return result
+    }
+  }
+
+  this.storage = function (key, data) {
+    if (data) {
+      localStorage.setItem(key, JSON.stringify(data))
+    } else {
+      return JSON.parse(localStorage.getItem(key))
+    }
+  }
+
+  this.settings = function (data) {
+    if (data) {
+      this.plainCookie('settings', data)
+    }
+  }
+
+  this.render = (schema, props = {}, env = {}) => {
+    let context = this.plainCookie('settings')
+    if (!context) {
+      context = props.context ?? {}
+    } else {
+      context = Object.assign(props.context ?? {}, context)
+    }
+    if (context.theme === undefined) {
+      context.theme = 'cxd'
+    }
+    if (context.darkness === undefined) {
+      context.darkness = !!window.matchMedia('(prefers-color-scheme: dark)').matches
+    }
+    if (context.lang === undefined || context.lang === 'auto') {
+      context.lang = window.navigator.languages[0]
+    }
+    props.locale = context.lang
+    env.theme = nowTheme(context.theme, context.darkness)
+    nowLang(context.lang)
+
+    // init the amis app
+    if (schema.type === 'app') {
+      env.updateLocation = updateLocation
+      env.isCurrentUrl = isCurrentUrl
+      env.jumpTo = jumpTo
+      history.listen((state) => {
+        this.amis.updateProps({
+          location: state.location || state,
+        })
+      })
+    }
+
+    // amis instance
+    let amis = amisRequire('amis/embed')
+    this.amis = amis.embed('#root', schema, props, env)
+
+    // jump to ref
+    const urlParams = new URLSearchParams(window.location.search)
+    const ref = urlParams.get('ref')
+    if (ref) {
+      jumpTo(ref)
+    }
+  }
+})()

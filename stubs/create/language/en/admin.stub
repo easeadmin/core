@@ -1,0 +1,6 @@
+{{{
+    exports({ to: app.languageFilesPath(`en/${name}/admin.json`) })
+}}}
+{
+    "{{name}}": "Admin"
+}

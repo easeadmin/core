@@ -1,0 +1,32 @@
+{{#var controllerName = generators.controllerName(controller, true)}}
+{{#var modelName = generators.modelName(repository)}}
+{{{
+  exports({ to: app.makePath(`app/${name}/controllers/${controller}_controller.ts`) })
+}}}
+import amis from 'easeadmin/builder/amis'
+import ResourceController from 'easeadmin/controllers/resource_controller'
+import {{modelName}}Repository from '../repositories/{{repository}}_repository.js'
+
+export default class {{controllerName}} extends ResourceController {
+  protected repository = new {{modelName}}Repository
+
+  protected fields() {
+    return [
+{{#each columns as item }}
+      amis('column_item').name('{{item.name}}').label(this.ctx.admin.t('{{item.label}}')),
+{{/each}}
+    ]
+  }
+
+  protected forms(isEdit: boolean) {
+    return [
+{{#each columns as item }}
+{{#if ['id','createdAt','updatedAt'].includes(item.name)}}
+      amis('input_{{item.type}}').name('{{item.name}}').label(this.ctx.admin.t('{{item.label}}')).disabled(isEdit).permission(isEdit),
+{{#else}}
+      amis('input_{{item.type}}').name('{{item.name}}').label(this.ctx.admin.t('{{item.label}}')),
+{{/if}}
+{{/each}}
+    ]
+  }
+}

@@ -1,0 +1,111 @@
+{
+  "name": "easeadmin",
+  "description": "EaseAdmin is a NodeJS Administrator Panels Based on AdonisJS and Amis",
+  "version": "1.0.0",
+  "homepage": "https://github.com/easeadmin",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/easeadmin/core.git"
+  },
+  "engines": {
+    "node": ">=20.6.0"
+  },
+  "main": "build/index.js",
+  "type": "module",
+  "files": [
+    "build/src",
+    "build/stubs",
+    "build/commands",
+    "build/index.d.ts",
+    "build/index.js",
+    "build/configure.d.ts",
+    "build/configure.js",
+    "build/define_config.d.ts",
+    "build/define_config.js"
+  ],
+  "exports": {
+    ".": "./build/index.js",
+    "./types": "./build/src/types.js",
+    "./admin/*": "./build/src/admin/*.js",
+    "./builder/*": "./build/src/builder/*.js",
+    "./commands": "./build/commands/main.js",
+    "./controllers/*": "./build/src/controllers/*.js",
+    "./repositories/*": "./build/src/repositories/*.js"
+  },
+  "scripts": {
+    "clean": "del-cli build",
+    "copy:templates": "copyfiles \"stubs/**/*\" build",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "quick:test": "node --import=./tsnode.esm.js --enable-source-maps bin/test.ts",
+    "pretest": "npm run lint",
+    "test": "c8 npm run quick:test",
+    "prebuild": "npm run lint && npm run clean",
+    "build": "tsc && npm run index:commands",
+    "postbuild": "npm run copy:templates",
+    "release": "np",
+    "version": "npm run build",
+    "prepublishOnly": "npm run build",
+    "index:commands": "adonis-kit index build/commands"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@adonisjs/assembler": "^7.8.2",
+    "@adonisjs/auth": "^9.4.2",
+    "@adonisjs/core": "^6.12.0",
+    "@adonisjs/eslint-config": "2.0.0-beta.7",
+    "@adonisjs/i18n": "^2.2.2",
+    "@adonisjs/lucid": "^21.7.0",
+    "@adonisjs/prettier-config": "^1.4.0",
+    "@adonisjs/tsconfig": "^1.3.0",
+    "@japa/assert": "^3.0.0",
+    "@japa/file-system": "^2.3.2",
+    "@japa/runner": "^3.1.4",
+    "@swc/core": "^1.6.3",
+    "@types/luxon": "^3.6.2",
+    "@types/node": "^20.14.5",
+    "c8": "^10.1.2",
+    "copyfiles": "^2.4.1",
+    "del-cli": "^5.1.0",
+    "eslint": "^9.15.0",
+    "np": "^10.0.6",
+    "prettier": "^3.3.2",
+    "reflect-metadata": "^0.2.2",
+    "sqlite3": "^5.1.7",
+    "ts-node-maintained": "^10.9.4",
+    "typescript": "^5.4.5"
+  },
+  "peerDependencies": {
+    "@adonisjs/auth": "^9.4.2",
+    "@adonisjs/core": "^6.2.0",
+    "@adonisjs/i18n": "^2.2.2",
+    "@adonisjs/lucid": "^21.7.0"
+  },
+  "publishConfig": {
+    "access": "public",
+    "tag": "latest"
+  },
+  "np": {
+    "message": "chore(release): %s",
+    "tag": "latest",
+    "branch": "main",
+    "anyBranch": false
+  },
+  "c8": {
+    "reporter": [
+      "text",
+      "html"
+    ],
+    "exclude": [
+      "tests/**"
+    ]
+  },
+  "prettier": "@adonisjs/prettier-config",
+  "dependencies": {
+    "extract-zip": "^2.0.1",
+    "svg-captcha": "^1.4.0"
+  }
+}
