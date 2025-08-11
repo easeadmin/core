@@ -26,7 +26,7 @@ test.group('Admin', async (group) => {
     await assert.fileExists('start/routes.ts')
 
     // configure
-    const path = new URL('../index.js',import.meta.url)
+    const path = new URL('../index.js', import.meta.url)
     const configureCommand = await ace.create(Configure, [path.href])
     await configureCommand.exec()
     configureCommand.assertSucceeded()
