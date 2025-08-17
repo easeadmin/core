@@ -1,7 +1,7 @@
 {
   "name": "easeadmin",
   "description": "EaseAdmin is a NodeJS Administrator Panels Based on AdonisJS and Amis",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "homepage": "https://github.com/easeadmin",
   "repository": {
     "type": "git",
@@ -49,8 +49,13 @@
     "prepublishOnly": "npm run build",
     "index:commands": "adonis-kit index build/commands"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "amis",
+    "admin",
+    "adonisjs",
+    "easeadmin"
+  ],
+  "author": "tmkook",
   "license": "MIT",
   "devDependencies": {
     "@adonisjs/assembler": "^7.8.2",
