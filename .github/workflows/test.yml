@@ -1,0 +1,30 @@
+name: test
+
+on:
+  - push
+  - pull_request
+
+jobs:
+  tests:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+        node-version:
+          - 23.x
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Install
+        run: npm install
+      - name: Run lint
+        run: npm run lint
+      - name: Run typecheck
+        run: npm run typecheck
+      - name: Run build
+        run: npm run build
+      - name: Run tests
+        run: npm run quick:test

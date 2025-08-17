@@ -1,0 +1,9 @@
+{{{
+    exports({ to: app.languageFilesPath(`${lang}/${name}/${controller}.json`) })
+}}}
+{
+{{#each columns as item }}
+    "{{string.snakeCase(item.name)}}": "{{string.sentenceCase(item.label)}}",
+{{/each}}
+    "{{controller}}": "{{controller}}"
+}
