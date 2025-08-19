@@ -1,9 +1,9 @@
 <div align="center">
-<img src="https://easeadmin.github.io/docs/preview.jpg" width="120" alt="easeadmin" />
+<img src="https://github.com/easeadmin/core/blob/main/stubs/public/images/logo.png?raw=true" width="120" alt="easeadmin" />
 <h1 align="center">EaseAdmin</h1>
 <h4 align="center">Admin Panel Based on AdonisJS & Amis</h4>
 
-[Guide](https://github.com/easeadmin) |
+[Guide](https://easeadmin.github.io/docs/) |
 [Issues](https://github.com/easeadmin/core/issues) |
 [Discussions](https://github.com/orgs/easeadmin/discussions)
 
@@ -62,6 +62,4 @@ Please ⭐️ this repository if this project helped you
 
 # Preview
 
-<a href="http://demo.kmola.com/admin">
-<img src="https://github.com/easeadmin/core/blob/main/stubs/public/images/preview.jpg?raw=true" width="100%" alt="easeadmin" />
-</a>
+<img src="https://easeadmin.github.io/docs/preview.jpg" width="100%" alt="easeadmin" />
