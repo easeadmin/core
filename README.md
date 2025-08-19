@@ -1,5 +1,5 @@
 <div align="center">
-<img src="https://github.com/easeadmin/core/blob/main/stubs/public/images/logo.png?raw=true" width="120" alt="easeadmin" />
+<img src="https://easeadmin.github.io/docs/preview.jpg" width="120" alt="easeadmin" />
 <h1 align="center">EaseAdmin</h1>
 <h4 align="center">Admin Panel Based on AdonisJS & Amis</h4>
 
