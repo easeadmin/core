@@ -173,6 +173,9 @@ export default class Admin {
     } else {
       translate = string.sentenceCase(key)
     }
+    if (translate === '') {
+      translate = key
+    }
     return translate
   }
 
