@@ -105,18 +105,20 @@ export default class InstallCommand extends BaseCommand {
     if (fs.existsSync(path)) {
       let append = `import '../app/${this.name}/routes.js'`
       let file = fs.readFileSync(path, { encoding: 'utf-8' })
-      let lines = file.split(`\n`)
-      for (let i in lines) {
-        if (lines[i].indexOf('@adonisjs/core/services/router') > 0) {
-          lines[i] = append + `\n` + lines[i]
-          break
+      if (file.indexOf(append) < 0) {
+        let lines = file.split(`\n`)
+        for (let i in lines) {
+          if (lines[i].indexOf('@adonisjs/core/services/router') > 0) {
+            lines[i] = append + `\n` + lines[i]
+            break
+          }
         }
+        let content = lines.join(`\n`)
+        if (content.indexOf(append) < 0) {
+          content = append + `\n` + content
+        }
+        fs.writeFileSync(path, content, { encoding: 'utf-8' })
       }
-      let content = lines.join(`\n`)
-      if (content.indexOf(append) < 0) {
-        content = append + `\n` + content
-      }
-      fs.writeFileSync(path, content, { encoding: 'utf-8' })
     } else {
       this.logger.warning(
         'start/routes.ts not found, please add `import "../app/' +
