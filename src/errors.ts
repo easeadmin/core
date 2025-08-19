@@ -11,6 +11,7 @@ export class AdminException extends Exception {
     let respond = { status: status, code: code, msg: ctx.admin.t(code, error, message) }
     return ctx.response.json(respond)
   }
+  async report(_error: this, _ctx: HttpContext) {}
 }
 
 export function createAdminException(message: string, code: string, status: number = 500) {
