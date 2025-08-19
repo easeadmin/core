@@ -40,7 +40,7 @@ export default class AdminRepository extends Repository<AdminRepository> {
   async developer() {
     return [
       {
-        label: 'helper',
+        label: this.ctx.admin.t('helper'),
         children: [
           {
             label: this.ctx.admin.t('developer'),

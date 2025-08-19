@@ -92,6 +92,7 @@ export default class LoginController extends Controller {
           width: '100% !important',
         },
       })
+      .style({ height: '100%' })
       .cssVars({
         '--borderWidth': '0',
         '--Page-main-bg': 'none',
