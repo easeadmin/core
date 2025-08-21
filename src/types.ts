@@ -37,7 +37,7 @@ export type AdminConfig = {
     darkness: boolean
     brand: string
     logo: string
-    router_mode: 'hash' | 'history' | 'memory'
+    url_mode: 'hash' | 'history' | 'memory'
     login_side_align: 'left' | 'right' | 'center'
     login_side_image: string
     login_default_remember: boolean

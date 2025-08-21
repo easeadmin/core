@@ -9,51 +9,61 @@ export default abstract class Controller {
   protected abstract builder(): schema<any>
   constructor(protected ctx: HttpContext) {}
 
-  /**
-   * render to html
-   */
-  protected render(data: Record<string, any>, options: Record<string, any> = {}) {
-    return html(data, {
+  protected render(options: Record<string, any> = {}): string {
+    let config = {
       title: this.ctx.admin.t(this.ctx.admin.title),
       props: { context: this.ctx.admin.settings() },
       env: { enableAMISDebug: this.ctx.admin.config.client.debug },
-      ...options,
-    })
+    }
+    if (options.title) {
+      config.title = options.title
+    }
+    if (options.props) {
+      config.props = Object.assign(config.props, options.props)
+    }
+    if (options.env) {
+      config.env = Object.assign(config.env, options.env)
+    }
+    return html(this.builder().toJSON(), config)
   }
 
-  protected ok(data: any, msg: string = '') {
+  protected ok(data: any, msg: string = ''): Record<string, any> {
     return { code: 0, msg: msg, data: data }
   }
 
-  protected fail(msg: string = '', code: number = 1) {
+  protected fail(msg: string = '', code: number = 1): Record<string, any> {
     return { status: 1, code: code, msg: msg }
   }
 
-  async index() {
+  async index(): Promise<any> {
+    if (this.ctx.admin.isApiAction('schema')) {
+      return this.ok(this.builder().toJSON())
+    }
+
+    return this.render()
+  }
+
+  async create(): Promise<any> {
     throw E_ADMIN_HTTP_NOT_SUPPORT_METHOD
   }
 
-  async create() {
+  async edit(): Promise<any> {
     throw E_ADMIN_HTTP_NOT_SUPPORT_METHOD
   }
 
-  async edit() {
+  async show(): Promise<any> {
     throw E_ADMIN_HTTP_NOT_SUPPORT_METHOD
   }
 
-  async show() {
+  async store(): Promise<any> {
     throw E_ADMIN_HTTP_NOT_SUPPORT_METHOD
   }
 
-  async store() {
+  async update(): Promise<any> {
     throw E_ADMIN_HTTP_NOT_SUPPORT_METHOD
   }
 
-  async update() {
-    throw E_ADMIN_HTTP_NOT_SUPPORT_METHOD
-  }
-
-  async destroy() {
+  async destroy(): Promise<any> {
     throw E_ADMIN_HTTP_NOT_SUPPORT_METHOD
   }
 }

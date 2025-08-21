@@ -5,7 +5,7 @@ import BuilderRepository from '../repositories/builder_repository.js'
 export default class BuilderController extends Controller {
   protected repository = new BuilderRepository()
 
-  protected builder(): any {
+  protected builder() {
     let json: Record<string, any> = this.ctx.admin.api('store')
     let code: Record<string, any> = this.ctx.admin.api('store')
     json['data'] = 'json=${json}'
@@ -49,24 +49,6 @@ export default class BuilderController extends Controller {
               ]),
           ])
       )
-  }
-
-  async index(): Promise<any> {
-    if (this.ctx.admin.isApiAction('schema')) {
-      return this.ok(this.builder().toJSON())
-    }
-
-    return await this.create()
-  }
-
-  async create(): Promise<any> {
-    if (this.ctx.admin.config.client.router_mode === 'history') {
-      const path = this.ctx.request.parsedUrl.pathname
-      return this.ctx.response.redirect(
-        this.ctx.admin.url('auth_home.index', { qs: { ref: path } })
-      )
-    }
-    return this.render(this.builder().toJSON())
   }
 
   async store(): Promise<any> {

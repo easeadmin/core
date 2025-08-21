@@ -19,56 +19,12 @@ export default class AdminController extends ResourceController {
     super(ctx)
   }
 
-  protected builder() {
+  protected dashboard(){
     return amis('page').body('dashboard')
   }
 
   protected fields() {
-    return []
-  }
-
-  protected header(): any {
-    return amis('flex')
-      .className('w-full')
-      .justify('flex-end')
-      .alignItems('center')
-      .items([
-        amis('button')
-          .icon('refresh')
-          .permission(this.showRefreshButton)
-          .className('text-current text-lg')
-          .onClick('window.location.reload()'),
-        amis('button')
-          .icon('arrows-alt')
-          .permission(this.showFullscreenButton)
-          .className('text-current text-lg ml-2')
-          .onClick(
-            'document.fullscreenElement? document.exitFullscreen() : document.body.requestFullscreen()'
-          ),
-        amis('button')
-          .icon('cog')
-          .permission(this.showCustomButton)
-          .className('text-current text-lg ml-2')
-          .dialog(
-            amis('dialog').closeOnEsc(true).title(this.ctx.admin.t('custom')).body(this.custom())
-          ),
-        amis('divider').direction('vertical').className('ml-3'),
-
-        amis('button')
-          .icon('bell')
-          .permission(this.showNotificationButton)
-          .className('text-current text-lg ml-3')
-          .dialog(this.notification())
-          .badge(amis('badge').text(this.notificationBadge).mode('text').position('top-right')),
-
-        amis('dropdown_button')
-          .hideCaret(true)
-          .level('link')
-          .btnClassName('avatar-sm text-current text-lg')
-          .align('right')
-          .icon(this.ctx.admin.userinfo.avatar, '')
-          .buttons(this.actions()),
-      ])
+    return [amis('column_item').name('message')]
   }
 
   protected forms() {
@@ -166,7 +122,7 @@ export default class AdminController extends ResourceController {
       .body(
         amis('list').listItem(
           amis('list_item')
-            .body([amis('column_item').name('message')])
+            .body(this.fields())
             .actions([
               amis('button')
                 .label(this.ctx.admin.t('show'))
@@ -179,19 +135,71 @@ export default class AdminController extends ResourceController {
       )
   }
 
-  /**
-   * render to html
-   */
-  async create() {
-    const page = amis('app')
+  protected header(): any {
+    return amis('flex')
+      .className('w-full')
+      .justify('flex-end')
+      .alignItems('center')
+      .items([
+        amis('button')
+          .icon('refresh')
+          .permission(this.showRefreshButton)
+          .className('text-current text-lg')
+          .onClick('window.location.reload()'),
+        amis('button')
+          .icon('arrows-alt')
+          .permission(this.showFullscreenButton)
+          .className('text-current text-lg ml-2')
+          .onClick(
+            'document.fullscreenElement? document.exitFullscreen() : document.body.requestFullscreen()'
+          ),
+        amis('button')
+          .icon('cog')
+          .permission(this.showCustomButton)
+          .className('text-current text-lg ml-2')
+          .dialog(
+            amis('dialog').closeOnEsc(true).title(this.ctx.admin.t('custom')).body(this.custom())
+          ),
+        amis('divider').direction('vertical').className('ml-3'),
+
+        amis('button')
+          .icon('bell')
+          .permission(this.showNotificationButton)
+          .className('text-current text-lg ml-3')
+          .dialog(this.notification())
+          .badge(amis('badge').text(this.notificationBadge).mode('text').position('top-right')),
+
+        amis('dropdown_button')
+          .hideCaret(true)
+          .level('link')
+          .btnClassName('avatar-sm text-current text-lg')
+          .align('right')
+          .icon(this.ctx.admin.userinfo.avatar, '')
+          .buttons(this.actions()),
+      ])
+  }
+
+  protected builder() {
+    return amis('app')
       .api(this.ctx.admin.api('paginate'))
       .brandName(this.ctx.admin.config.client.brand)
       .logo(this.ctx.admin.config.client.logo)
       .header(this.header())
-    let append = `
+  }
+
+  protected render(options: Record<string, any> = {}) {
+    options.inject = `
       <style>.avatar-sm img{width:2rem;height:2rem;border-radius:100%;overflow:hidden;margin:0 !important;}</style>
-      <script>const ROUTER_MODE = '${this.ctx.admin.config.client.router_mode}'</script>
+      <script>const URL_MODE = '${this.ctx.admin.config.client.url_mode}'</script>
     `
-    return super.render(page, { inject: append })
+    return super.render(options)
+  }
+
+  async index() {
+    if (this.ctx.admin.isApiAction('schema')) {
+      return this.ok(this.dashboard().toJSON())
+    }
+
+    return this.render()
   }
 }

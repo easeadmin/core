@@ -155,10 +155,6 @@ export default class LoginController extends Controller {
     return page
   }
 
-  async index(): Promise<any> {
-    return this.render(this.builder().toJSON())
-  }
-
   async show(): Promise<any> {
     return await this.repository.show()
   }

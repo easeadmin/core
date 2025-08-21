@@ -2,17 +2,23 @@
   exports({ to: app.publicPath(`ease/ease.js`) })
 }}}
 const ease = new (function () {
+  const url_mode = URL_MODE?? 'hash'
   const history = createHistory()
 
   function createHistory() {
-    if (typeof (ROUTER_MODE) === 'string') {
-      if (ROUTER_MODE === 'hash') {
-        return HistoryLibrary.createHashHistory()
-      } else if (ROUTER_MODE === 'history') {
-        return HistoryLibrary.createBrowserHistory()
-      } else if (ROUTER_MODE === 'memory') {
-        return HistoryLibrary.createMemoryHistory()
+    if (url_mode === 'hash') {
+      return HistoryLibrary.createHashHistory()
+    } else if (url_mode === 'history') {
+      // 刷新页面时，返回框架，重新跳转页面
+      window.onbeforeunload = function(e){
+        const ref = window.location.pathname
+        window.history.go(-(window.history.length - 1))
+        jumpTo(ref)
+        e.preventDefault();
       }
+      return HistoryLibrary.createBrowserHistory()
+    } else if (url_mode === 'memory') {
+      return HistoryLibrary.createMemoryHistory()
     }
     return HistoryLibrary.createHashHistory()
   }
@@ -116,7 +122,7 @@ const ease = new (function () {
       (!/^https?:/.test(to) && to === history.pathname + history.location.search) ||
       to === history.location.href
     ) {
-      // do nothing
+      history.push(to)
     } else {
       history.push(to)
     }
@@ -243,12 +249,5 @@ const ease = new (function () {
     // amis instance
     let amis = amisRequire('amis/embed')
     this.amis = amis.embed('#root', schema, props, env)
-
-    // jump to ref
-    const urlParams = new URLSearchParams(window.location.search)
-    const ref = urlParams.get('ref')
-    if (ref) {
-      jumpTo(ref)
-    }
   }
 })()

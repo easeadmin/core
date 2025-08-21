@@ -5,10 +5,19 @@ import Controller from 'easeadmin/admin/controllers/admin_controller'
 import amis from 'easeadmin/builder/amis'
 
 export default class AdminController extends Controller {
-  protected builder() {
+  protected dashboard() {
     return amis('page')
-      .initApi(this.ctx.admin.api('show'))
-      .data({ id: 1 })
+      //.initApi(this.ctx.admin.api('pagniate'))
+      .data({
+        order_chart: ordersChart,
+        order_status: orderStatus,
+        task_chart: taskChart,
+        task_queue: taskQueue,
+        task_category: taskCategory,
+        page_view: { count: 1200, percent: '+12%', color: 'success' },
+        total_revenue: { count: 1023, percent: '+12%', color: 'success' },
+        bounce_rate: { count: 866, percent: '-2%', color: 'error' },
+      })
       .body([
         amis('grid').columns([
           amis('grid_item').md(4).body(amis('panel').body([
@@ -77,19 +86,6 @@ export default class AdminController extends Controller {
           ),
         ])
       ])
-  }
-
-  async show() {
-    return this.ok({
-      order_chart: ordersChart,
-      order_status: orderStatus,
-      task_chart: taskChart,
-      task_queue: taskQueue,
-      task_category: taskCategory,
-      page_view: { count: 1200, percent: '+12%', color: 'success' },
-      total_revenue: { count: 1023, percent: '+12%', color: 'success' },
-      bounce_rate: { count: 866, percent: '-2%', color: 'error' },
-    })
   }
 }
 

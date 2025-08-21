@@ -25,8 +25,12 @@ export default class AdminRepository extends Repository<AdminRepository> {
       menu['icon'] = `fa ${item.icon}`
     }
     if (item.slug) {
-      menu['url'] = item.slug
-      menu['schemaApi'] = this.ctx.admin.api('schema', item.slug)
+      if (item.slug.startsWith('http://') || item.slug.startsWith('https://')) {
+        menu['link'] = item.slug
+      } else {
+        menu['url'] = item.slug
+        menu['schemaApi'] = this.ctx.admin.api('schema', item.slug)
+      }
     }
     if (item.visible !== 1) {
       menu['visible'] = false
@@ -107,7 +111,7 @@ export default class AdminRepository extends Repository<AdminRepository> {
   /**
    * upload avatar
    */
-  async store() {
+  async store(): Promise<any> {
     const file = this.ctx.request.file('file', {
       size: this.ctx.admin.config.upload.maxsize,
       extnames: this.ctx.admin.config.upload.extnames,
@@ -131,7 +135,7 @@ export default class AdminRepository extends Repository<AdminRepository> {
     return { value: url }
   }
 
-  async delete() {
+  async delete(): Promise<any> {
     let result = [this.ctx.admin.user.id]
     this.ctx.admin.logout()
     return result

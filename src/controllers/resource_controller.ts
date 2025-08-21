@@ -13,10 +13,10 @@ export default abstract class ResourceController extends Controller {
   protected showBulkDeleteButton = true
   protected showFilterToggler = true
   protected showBulkActions = true
+  protected defaultParams: Record<string, string> = { orderBy: 'id', orderDir: 'desc' }
   protected abstract repository: Repository<any>
   protected abstract forms(isEdit: boolean): schema<any>[]
   protected abstract fields(): schema<any>[]
-  protected defaultParams: Record<string, string> = { orderBy: 'id', orderDir: 'desc' }
 
   /**
    * get filter keys
@@ -77,10 +77,16 @@ export default abstract class ResourceController extends Controller {
     ])
   }
 
+  /**
+   * page header
+   */
   protected header(): any[] {
     return []
   }
 
+  /**
+   * page footer
+   */
   protected footer(): any[] {
     return []
   }
@@ -218,6 +224,9 @@ export default abstract class ResourceController extends Controller {
       ])
   }
 
+  /**
+   * table render and table data api
+   */
   async index(): Promise<any> {
     if (this.ctx.admin.isApiAction('schema')) {
       return this.ok(this.builder().toJSON())
@@ -240,38 +249,56 @@ export default abstract class ResourceController extends Controller {
       return this.ok(await this.repository.options(qs, filters))
     }
 
-    return await this.create()
+    return this.render()
   }
 
+  /**
+   * create page
+   */
   async create(): Promise<any> {
-    if (this.ctx.admin.config.client.router_mode === 'history') {
-      const path = this.ctx.request.parsedUrl.pathname
-      return this.ctx.response.redirect(
-        this.ctx.admin.url('auth_home.index', { qs: { ref: path } })
-      )
-    }
-    return this.render(this.builder().toJSON())
+    return this.ok(this.creator())
   }
 
+  /**
+   * edit page
+   */
   async edit(): Promise<any> {
+    if (this.ctx.admin.isApiAction('schema')) {
+      return this.ok(this.editor())
+    }
     return this.ok(await this.repository.edit(this.ctx.request.param('id')))
   }
 
+  /**
+   * detail page and detail data api
+   */
   async show(): Promise<any> {
+    if (this.ctx.admin.isApiAction('schema')) {
+      return this.ok(this.detail())
+    }
     return this.ok(await this.repository.show(this.ctx.request.param('id')))
   }
 
+  /**
+   * store api
+   */
   async store(): Promise<any> {
     let data = this.ctx.request.only(this.getForms())
     return this.ok(await this.repository.store(data))
   }
 
+  /**
+   * update api
+   */
   async update(): Promise<any> {
     let id = this.ctx.request.param('id')
     let data = this.ctx.request.only(this.getForms(true))
     return this.ok(await this.repository.update(id, data))
   }
 
+  /**
+   * delete api
+   */
   async destroy(): Promise<any> {
     let id = this.ctx.request.param('id')
     if (this.ctx.admin.isApiAction('forceDelete')) {
@@ -280,7 +307,6 @@ export default abstract class ResourceController extends Controller {
     if (this.ctx.admin.isApiAction('restore')) {
       return this.ok(await this.repository.restore(id))
     }
-
     return this.ok(await this.repository.delete(id))
   }
 }

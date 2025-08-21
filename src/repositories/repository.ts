@@ -1,43 +1,43 @@
 import { E_ADMIN_REPO_NOT_SUPPORT_METHOD } from '../errors.js'
 
 export default abstract class Repository<T extends Repository<T>> {
-  paginate(_qs: Record<string, any>, _filters: Record<string, any>) {
+  async paginate(_qs: Record<string, any>, _filters: Record<string, any>): Promise<any> {
     throw E_ADMIN_REPO_NOT_SUPPORT_METHOD
   }
 
-  export(_qs: Record<string, any>, _filters: Record<string, any>) {
+  async export(_qs: Record<string, any>, _filters: Record<string, any>): Promise<any> {
     throw E_ADMIN_REPO_NOT_SUPPORT_METHOD
   }
 
-  options(_qs: Record<string, any>, _filters: Record<string, any>) {
+  async options(_qs: Record<string, any>, _filters: Record<string, any>): Promise<any> {
     throw E_ADMIN_REPO_NOT_SUPPORT_METHOD
   }
 
-  edit(_id: any) {
+  async edit(_id: any): Promise<any> {
     throw E_ADMIN_REPO_NOT_SUPPORT_METHOD
   }
 
-  show(_id: any) {
+  async show(_id: any): Promise<any> {
     throw E_ADMIN_REPO_NOT_SUPPORT_METHOD
   }
 
-  store(_data: Record<string, any>) {
+  async store(_data: Record<string, any>): Promise<any> {
     throw E_ADMIN_REPO_NOT_SUPPORT_METHOD
   }
 
-  update(_id: any, _data: Record<string, any>) {
+  async update(_id: any, _data: Record<string, any>): Promise<any> {
     throw E_ADMIN_REPO_NOT_SUPPORT_METHOD
   }
 
-  delete(_id: any) {
+  async delete(_id: any): Promise<any> {
     throw E_ADMIN_REPO_NOT_SUPPORT_METHOD
   }
 
-  forceDelete(_id: any) {
+  async forceDelete(_id: any): Promise<any> {
     throw E_ADMIN_REPO_NOT_SUPPORT_METHOD
   }
 
-  restore(_id: any) {
+  async restore(_id: any): Promise<any> {
     throw E_ADMIN_REPO_NOT_SUPPORT_METHOD
   }
 }
