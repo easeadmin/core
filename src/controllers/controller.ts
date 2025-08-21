@@ -14,9 +14,11 @@ export default abstract class Controller {
       title: this.ctx.admin.t(this.ctx.admin.title),
       props: { context: this.ctx.admin.settings() },
       env: { enableAMISDebug: this.ctx.admin.config.client.debug },
-    }
-    if (options.title) {
-      config.title = options.title
+      definitions: {
+        urlmode: this.ctx.admin.config.client.url_mode,
+        host: this.ctx.admin.config.client.static_host,
+        homepage: this.ctx.admin.url('auth_home.index'),
+      },
     }
     if (options.props) {
       config.props = Object.assign(config.props, options.props)
@@ -24,6 +26,7 @@ export default abstract class Controller {
     if (options.env) {
       config.env = Object.assign(config.env, options.env)
     }
+    config = Object.assign(options, config)
     return html(this.builder().toJSON(), config)
   }
 

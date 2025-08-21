@@ -2,22 +2,31 @@
   exports({ to: app.publicPath(`ease/ease.js`) })
 }}}
 const ease = new (function () {
-  const url_mode = URL_MODE?? 'hash'
+  const definitions = window.definitions ?? { urlmode: 'hash', homepage: '/admin/auth/home', host: '' }
   const history = createHistory()
 
-  function createHistory() {
-    if (url_mode === 'hash') {
-      return HistoryLibrary.createHashHistory()
-    } else if (url_mode === 'history') {
-      // 刷新页面时，返回框架，重新跳转页面
-      window.onbeforeunload = function(e){
-        const ref = window.location.pathname
-        window.history.go(-(window.history.length - 1))
-        jumpTo(ref)
-        e.preventDefault();
+  function backReferer() {
+    let referer = window.localStorage.getItem('referer')
+    if (referer) {
+      if (window.location.pathname != definitions.homepage) {
+        window.location.href = definitions.homepage
+      } else {
+        window.localStorage.removeItem('referer')
+        jumpTo(referer)
       }
+    }
+  }
+
+  function createHistory() {
+    setTimeout(backReferer)
+    if (definitions.urlmode === 'hash') {
+      return HistoryLibrary.createHashHistory()
+    } else if (definitions.urlmode === 'history') {
+      window.addEventListener('beforeunload', function () {
+        window.localStorage.setItem('referer', window.location.pathname)
+      })
       return HistoryLibrary.createBrowserHistory()
-    } else if (url_mode === 'memory') {
+    } else if (definitions.urlmode === 'memory') {
       return HistoryLibrary.createMemoryHistory()
     }
     return HistoryLibrary.createHashHistory()
@@ -102,6 +111,10 @@ const ease = new (function () {
       return history.goBack()
     }
 
+    if (to === 'goForward') {
+      return history.goForward()
+    }
+
     to = normalizeLink(to)
 
     if (isCurrentUrl(to)) {
@@ -164,7 +177,16 @@ const ease = new (function () {
     }
   }
 
-  this.refreshImage = function (dom) {
+  this.fullscreen = function () {
+    document.fullscreenElement ? document.exitFullscreen() : document.body.requestFullscreen()
+  }
+
+  this.refresh = function () {
+    this.amis.doAction([{actionType: 'reload', componentId: 'app'}])
+  }
+
+  this.refreshImage = function (selector) {
+    let dom = document.querySelector(selector)
     let src = dom.src
     if (src.indexOf('_t') > -1) {
       dom.src = src.split('_t')[0] += '_t' + new Date().getTime()
@@ -214,6 +236,7 @@ const ease = new (function () {
     }
   }
 
+  // render amis
   this.render = (schema, props = {}, env = {}) => {
     let context = this.plainCookie('settings')
     if (!context) {

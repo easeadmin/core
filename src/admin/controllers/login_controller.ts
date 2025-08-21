@@ -73,10 +73,7 @@ export default class LoginController extends Controller {
               .onEvent('click', [
                 amis('event')
                   .actionType('custom')
-                  .action(
-                    'script',
-                    'ease.refreshImage(document.querySelector(".login-captcha img"))'
-                  ),
+                  .action('script', 'ease.refreshImage(".login-captcha img")'),
               ]),
           ]),
         amis('checkbox')

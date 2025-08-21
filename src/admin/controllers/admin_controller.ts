@@ -19,7 +19,7 @@ export default class AdminController extends ResourceController {
     super(ctx)
   }
 
-  protected dashboard(){
+  protected dashboard() {
     return amis('page').body('dashboard')
   }
 
@@ -145,14 +145,12 @@ export default class AdminController extends ResourceController {
           .icon('refresh')
           .permission(this.showRefreshButton)
           .className('text-current text-lg')
-          .onClick('window.location.reload()'),
+          .onClick('ease.refresh()'),
         amis('button')
           .icon('arrows-alt')
           .permission(this.showFullscreenButton)
           .className('text-current text-lg ml-2')
-          .onClick(
-            'document.fullscreenElement? document.exitFullscreen() : document.body.requestFullscreen()'
-          ),
+          .onClick('ease.fullscreen()'),
         amis('button')
           .icon('cog')
           .permission(this.showCustomButton)
@@ -181,6 +179,7 @@ export default class AdminController extends ResourceController {
 
   protected builder() {
     return amis('app')
+      .id('app')
       .api(this.ctx.admin.api('paginate'))
       .brandName(this.ctx.admin.config.client.brand)
       .logo(this.ctx.admin.config.client.logo)
@@ -190,7 +189,6 @@ export default class AdminController extends ResourceController {
   protected render(options: Record<string, any> = {}) {
     options.inject = `
       <style>.avatar-sm img{width:2rem;height:2rem;border-radius:100%;overflow:hidden;margin:0 !important;}</style>
-      <script>const URL_MODE = '${this.ctx.admin.config.client.url_mode}'</script>
     `
     return super.render(options)
   }
@@ -200,6 +198,6 @@ export default class AdminController extends ResourceController {
       return this.ok(this.dashboard().toJSON())
     }
 
-    return this.render()
+    return await super.index()
   }
 }

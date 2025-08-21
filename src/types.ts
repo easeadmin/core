@@ -38,6 +38,7 @@ export type AdminConfig = {
     brand: string
     logo: string
     url_mode: 'hash' | 'history' | 'memory'
+    static_host: string
     login_side_align: 'left' | 'right' | 'center'
     login_side_image: string
     login_default_remember: boolean

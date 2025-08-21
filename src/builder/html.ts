@@ -6,11 +6,13 @@ export default function html(
     inject?: string
     props?: Record<string, any>
     env?: Record<string, any>
+    definitions?: Record<string, any>
   }
 ) {
   let schemaJson = JSON.stringify(schema ?? {})
   let propsJson = JSON.stringify(options.props ?? {})
   let envJson = JSON.stringify(options.env ?? {})
+  let definitions = JSON.stringify(options.definitions ?? {})
   let inject = options.inject ?? ''
   let host = options.host ?? ''
   let data = `
@@ -24,6 +26,7 @@ export default function html(
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
     <link rel="stylesheet" href="${host}/ease/jssdk/iconfont.css" />
     <link rel="icon" href="${host}/ease/images/favicon-32.ico" />
+    <script>window.definitions = ${definitions}</script>
     ${inject}
     </head>
     <body style="margin:0;padding:0;height:100%">
