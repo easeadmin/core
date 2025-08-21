@@ -2,29 +2,13 @@
   exports({ to: app.publicPath(`ease/ease.js`) })
 }}}
 const ease = new (function () {
+  let history = null
   const definitions = window.definitions ?? { urlmode: 'hash', homepage: '/admin/auth/home', host: '' }
-  const history = createHistory()
-
-  function backReferer() {
-    let referer = window.localStorage.getItem('referer')
-    if (referer) {
-      if (window.location.pathname != definitions.homepage) {
-        window.location.href = definitions.homepage
-      } else {
-        window.localStorage.removeItem('referer')
-        jumpTo(referer)
-      }
-    }
-  }
 
   function createHistory() {
-    setTimeout(backReferer)
     if (definitions.urlmode === 'hash') {
       return HistoryLibrary.createHashHistory()
     } else if (definitions.urlmode === 'history') {
-      window.addEventListener('beforeunload', function () {
-        window.localStorage.setItem('referer', window.location.pathname)
-      })
       return HistoryLibrary.createBrowserHistory()
     } else if (definitions.urlmode === 'memory') {
       return HistoryLibrary.createMemoryHistory()
@@ -259,6 +243,15 @@ const ease = new (function () {
 
     // init the amis app
     if (schema.type === 'app') {
+      // log app referer
+      if(definitions.urlmode === 'history'){
+        window.addEventListener('beforeunload', function () {
+          window.localStorage.setItem('referer', window.location.pathname)
+        })
+      }
+
+      // config amis
+      history = createHistory()
       env.updateLocation = updateLocation
       env.isCurrentUrl = isCurrentUrl
       env.jumpTo = jumpTo
@@ -268,9 +261,20 @@ const ease = new (function () {
         })
       })
     }
-
+    
     // amis instance
     let amis = amisRequire('amis/embed')
     this.amis = amis.embed('#root', schema, props, env)
+
+    // back app referer
+    let referer = window.localStorage.getItem('referer')
+    if (referer && definitions.logged) {
+      if (window.location.pathname != definitions.homepage) {
+        window.location.href = definitions.homepage
+      } else {
+        window.localStorage.removeItem('referer')
+        jumpTo(referer)
+      }
+    }
   }
 })()

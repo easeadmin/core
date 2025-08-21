@@ -111,7 +111,7 @@ export default class AdminRepository extends Repository<AdminRepository> {
   /**
    * upload avatar
    */
-  async store(): Promise<any> {
+  async store() {
     const file = this.ctx.request.file('file', {
       size: this.ctx.admin.config.upload.maxsize,
       extnames: this.ctx.admin.config.upload.extnames,
@@ -133,11 +133,5 @@ export default class AdminRepository extends Repository<AdminRepository> {
     }
 
     return { value: url }
-  }
-
-  async delete(): Promise<any> {
-    let result = [this.ctx.admin.user.id]
-    this.ctx.admin.logout()
-    return result
   }
 }

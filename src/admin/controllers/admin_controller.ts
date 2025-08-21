@@ -82,7 +82,7 @@ export default class AdminController extends ResourceController {
         .api(
           this.ctx.admin.api(
             'delete',
-            this.ctx.admin.url('auth_home.destroy', { params: { id: '1' } })
+            this.ctx.admin.url('auth_login.destroy', { params: { id: '1' } })
           )
         )
         .reload('window'),

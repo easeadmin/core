@@ -18,6 +18,7 @@ export default abstract class Controller {
         urlmode: this.ctx.admin.config.client.url_mode,
         host: this.ctx.admin.config.client.static_host,
         homepage: this.ctx.admin.url('auth_home.index'),
+        logged: !!this.ctx.admin.user,
       },
     }
     if (options.props) {

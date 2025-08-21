@@ -35,4 +35,9 @@ export default class LoginRepository extends Repository<LoginRepository> {
     ctx.response.type('.svg')
     return svg.data
   }
+
+  async delete(id: any) {
+    this.ctx.admin.logout()
+    return [id]
+  }
 }

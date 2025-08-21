@@ -69,7 +69,7 @@ export default class LoginController extends Controller {
               .height(32)
               .imageMode('original')
               .className('login-captcha')
-              .src(this.ctx.admin.url('auth_login.show', { params: { id: 1 } }))
+              .src(this.ctx.admin.url('auth_login.create'))
               .onEvent('click', [
                 amis('event')
                   .actionType('custom')
@@ -152,11 +152,17 @@ export default class LoginController extends Controller {
     return page
   }
 
-  async show(): Promise<any> {
+  async create() {
     return await this.repository.show()
   }
 
-  async store(): Promise<any> {
-    return await this.repository.store(this.ctx.request.body())
+  async store() {
+    let result = await this.repository.store(this.ctx.request.body())
+    return this.ok(result)
+  }
+
+  async destroy() {
+    let result = await this.repository.delete(this.ctx.request.param('id'))
+    return this.ok(result)
   }
 }
