@@ -172,4 +172,9 @@ export default class InputTable extends FormItem {
     this.json['columns'] = columns
     return this
   }
+
+  draggable(draggable: boolean) {
+    this.json['draggable'] = draggable
+    return this
+  }
 }
