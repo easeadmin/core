@@ -1,8 +1,8 @@
 import { inject } from '@adonisjs/core'
 import { HttpContext } from '@adonisjs/core/http'
-import ResourceController from '../../controllers/resource_controller.js'
-import MenuRepository from '../repositories/menu_repository.js'
-import amis from '../../builder/amis.js'
+import ResourceController from '#core/src/controllers/resource_controller'
+import MenuRepository from '#core/src/admin/repositories/menu_repository'
+import amis from '#core/src/builder/amis'
 
 @inject()
 export default class MenuController extends ResourceController {

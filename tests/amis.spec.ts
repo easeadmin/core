@@ -1,7 +1,7 @@
 import { test } from '@japa/runner'
-import amis from '../src/builder/amis.js'
-import html from '../src/builder/html.js'
-import parser from '../src/builder/parser.js'
+import amis from '#core/src/builder/amis'
+import html from '#core/src/builder/html'
+import parser from '#core/src/builder/parser'
 
 test.group('Amis', () => {
   test('Find', ({ assert }) => {

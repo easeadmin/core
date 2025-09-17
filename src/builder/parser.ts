@@ -1,4 +1,4 @@
-import * as components from './index.js'
+import * as components from '#core/src/builder/index'
 
 export default function parser(json: any, type?: string): string {
   if (!type) {

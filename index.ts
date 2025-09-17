@@ -7,7 +7,7 @@
 |
 */
 
-export { configure } from './configure.js'
-export { defineConfig } from './define_config.js'
-export { Start } from './src/start.js'
-export * from './src/errors.js'
+export { configure } from '#core/configure'
+export { defineConfig } from '#core/define_config'
+export { Start } from '#core/src/start'
+export * from '#core/src/errors'

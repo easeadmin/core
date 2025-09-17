@@ -1,4 +1,4 @@
-import type { AdminConfig } from './src/types.js'
+import type { AdminConfig } from '#core/src/types'
 export function defineConfig(config?: AdminConfig): AdminConfig {
   const defaultConfig = {
     auth: {

@@ -1,5 +1,5 @@
-import { E_ADMIN_INVALID_CAPTCHA, E_ADMIN_LOGIN_FAILED } from '../../errors.js'
-import Repository from '../../repositories/repository.js'
+import { E_ADMIN_INVALID_CAPTCHA, E_ADMIN_LOGIN_FAILED } from '#core/src/errors'
+import Repository from '#core/src/repositories/repository'
 import { HttpContext } from '@adonisjs/core/http'
 import { inject } from '@adonisjs/core'
 import svgCaptcha from 'svg-captcha'

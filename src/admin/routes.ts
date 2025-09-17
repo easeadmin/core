@@ -1,12 +1,12 @@
 import app from '@adonisjs/core/services/app'
 import router from '@adonisjs/core/services/router'
-import AdminController from './controllers/admin_controller.js'
-import UserController from './controllers/user_controller.js'
-import RoleController from './controllers/role_controller.js'
-import MenuController from './controllers/menu_controller.js'
-import LoginController from './controllers/login_controller.js'
-import BuilderController from './controllers/builder_controller.js'
-import PermissionController from './controllers/permission_controller.js'
+import AdminController from '#core/src/admin/controllers/admin_controller'
+import UserController from '#core/src/admin/controllers/user_controller'
+import RoleController from '#core/src/admin/controllers/role_controller'
+import MenuController from '#core/src/admin/controllers/menu_controller'
+import LoginController from '#core/src/admin/controllers/login_controller'
+import BuilderController from '#core/src/admin/controllers/builder_controller'
+import PermissionController from '#core/src/admin/controllers/permission_controller'
 
 export default function routes(): Record<string, Function> {
   const system: Record<string, Function> = {

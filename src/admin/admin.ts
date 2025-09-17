@@ -1,12 +1,13 @@
 import { inject } from '@adonisjs/core'
 import { HttpContext } from '@adonisjs/core/http'
-import { AdminConfig } from '../types.js'
-import { defineConfig } from '../../define_config.js'
-import { E_ADMIN_PERMISSION_DENIED } from '../errors.js'
+import { LucidModel } from '@adonisjs/lucid/types/model'
+import logger from '@adonisjs/core/services/logger'
 import string from '@adonisjs/core/helpers/string'
 import router from '@adonisjs/core/services/router'
 import app from '@adonisjs/core/services/app'
-import { LucidModel } from '@adonisjs/lucid/types/model'
+import { E_ADMIN_PERMISSION_DENIED } from '#core/src/errors'
+import { defineConfig } from '#core/define_config'
+import { AdminConfig } from '#core/src/types'
 
 @inject()
 export default class Admin {
@@ -18,7 +19,8 @@ export default class Admin {
     protected models: Record<string, LucidModel>
   ) {
     if (this.ctx.route && this.ctx.route.handler) {
-      this.controller = (this.ctx.route.handler as any).name.split('Controller')[0].toLowerCase()
+      let handlerName = (this.ctx.route.handler as any)?.name ?? ''
+      this.controller = string.snakeCase(handlerName.split('Controller')[0])
     }
   }
 
@@ -33,6 +35,7 @@ export default class Admin {
     if ('auth' in this.ctx) {
       return (this.ctx as any).auth.use(this.name)?.user
     }
+    return null
   }
 
   get prefix() {
@@ -43,19 +46,19 @@ export default class Admin {
    * get login user to json
    */
   get userinfo() {
-    return this.user ? this.user.toJSON() : {}
+    return this.user ? this.user.toJSON() : null
   }
 
   /**
    * get i18n lang
    */
   get lang() {
-    const ctx = this.ctx as any
+    let ctx = this.ctx as any
     if ('i18n' in ctx) {
       return ctx.i18n.locale as string
     } else {
       if (app.inDev) {
-        console.log('please run `node ace add @adonisjs/i18n`')
+        logger.info('please run `node ace add @adonisjs/i18n`')
       }
     }
     return 'en'
@@ -81,7 +84,7 @@ export default class Admin {
   flatArray(items: any[], pk: string = 'id') {
     let flats: Record<string, any> = {}
     items.forEach((row) => {
-      const item = row.toJSON ? row.toJSON() : row
+      let item = row.toJSON ? row.toJSON() : row
       flats[item[pk]] = { ...item }
     })
     return flats
@@ -140,7 +143,7 @@ export default class Admin {
    */
   switchLocale(lang: string) {
     if (lang) {
-      const ctx = this.ctx as any
+      let ctx = this.ctx as any
       if ('i18n' in ctx && lang !== this.lang) {
         ctx.i18n.switchLocale(lang)
       }
@@ -152,7 +155,7 @@ export default class Admin {
    */
   t(key: string, data?: Record<string, any>, fallback?: string): string {
     let translate = ''
-    const ctx = this.ctx as any
+    let ctx = this.ctx as any
     if ('i18n' in ctx) {
       let commonKey = `${this.name}.common.${key}`
       let currentKey = `${this.name}.${this.controller}.${key}`
@@ -167,7 +170,7 @@ export default class Admin {
       if (translate === key) {
         translate = fallback ?? string.sentenceCase(key)
         if (app.inDev) {
-          console.log(`translation missing: ${key} in ${this.controller}`)
+          logger.info(`translation missing: ${key} in ${this.controller}`)
         }
       }
     } else {
@@ -309,7 +312,7 @@ export default class Admin {
    */
   async authenticate() {
     if (this.config.auth.guard.length > 0) {
-      const ctx = this.ctx as any
+      let ctx = this.ctx as any
       if (this.isExcept()) {
         // slient auth
         await ctx.auth.use(this.config.auth.guard).check()
@@ -339,10 +342,13 @@ export default class Admin {
    * get current user roles
    */
   async getRoles() {
-    if (!this.user.roles) {
-      await this.user.load('roles')
+    if (this.user) {
+      if (!this.user.roles) {
+        await this.user.load('roles')
+      }
+      return this.user.roles
     }
-    return this.user.roles
+    return []
   }
 
   /**

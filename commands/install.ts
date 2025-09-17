@@ -1,7 +1,7 @@
 import { configProvider } from '@adonisjs/core'
 import { CommandOptions } from '@adonisjs/core/types/ace'
 import { BaseCommand, args, flags } from '@adonisjs/core/ace'
-import { stubsRoot } from '../stubs/main.js'
+import { stubsRoot } from '#core/stubs/main'
 import fs from 'node:fs'
 
 export default class InstallCommand extends BaseCommand {

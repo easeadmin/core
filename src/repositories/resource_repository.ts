@@ -1,7 +1,7 @@
 import { LucidModel, LucidRow, ModelQueryBuilderContract } from '@adonisjs/lucid/types/model'
 import { BaseModel } from '@adonisjs/lucid/orm'
-import { QueryType } from '../types.js'
-import Repository from './repository.js'
+import { QueryType } from '#core/src/types'
+import Repository from '#core/src/repositories/repository'
 
 export default class ResourceRepository extends Repository<ResourceRepository> {
   protected pk = 'id'

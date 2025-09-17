@@ -1,8 +1,8 @@
 import { inject } from '@adonisjs/core'
 import { HttpContext } from '@adonisjs/core/http'
-import ResourceController from '../../controllers/resource_controller.js'
-import UserRepository from '../repositories/user_repository.js'
-import amis from '../../builder/amis.js'
+import ResourceController from '#core/src/controllers/resource_controller'
+import UserRepository from '#core/src/admin/repositories/user_repository'
+import amis from '#core/src/builder/amis'
 
 @inject()
 export default class UserController extends ResourceController {

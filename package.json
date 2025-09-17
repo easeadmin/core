@@ -1,7 +1,7 @@
 {
   "name": "easeadmin",
   "description": "EaseAdmin is a NodeJS Administrator Panels Based on AdonisJS and Amis",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "homepage": "https://github.com/easeadmin",
   "repository": {
     "type": "git",
@@ -23,6 +23,9 @@
     "build/define_config.d.ts",
     "build/define_config.js"
   ],
+  "imports": {
+    "#core/*": "./build/*.js"
+  },
   "exports": {
     ".": "./build/index.js",
     "./types": "./build/src/types.js",

@@ -2,8 +2,8 @@ import type { HttpContext } from '@adonisjs/core/http'
 import type { NextFn } from '@adonisjs/core/types/http'
 import app from '@adonisjs/core/services/app'
 import router from '@adonisjs/core/services/router'
-import routes from './admin/routes.js'
-import Admin from './admin/admin.js'
+import routes from '#core/src/admin/routes'
+import Admin from '#core/src/admin/admin'
 
 export class Start {
   protected registed: Record<string, Function> = {}

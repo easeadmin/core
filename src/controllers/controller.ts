@@ -1,8 +1,8 @@
-import { E_ADMIN_HTTP_NOT_SUPPORT_METHOD } from '../errors.js'
+import { E_ADMIN_HTTP_NOT_SUPPORT_METHOD } from '#core/src/errors'
 import { HttpContext } from '@adonisjs/core/http'
-import { schema } from '../builder/index.js'
+import { schema } from '#core/src/builder/index'
 import { inject } from '@adonisjs/core'
-import html from '../builder/html.js'
+import html from '#core/src/builder/html'
 
 @inject()
 export default abstract class Controller {

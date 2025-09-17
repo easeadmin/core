@@ -1,4 +1,4 @@
-import { E_ADMIN_REPO_NOT_SUPPORT_METHOD } from '../errors.js'
+import { E_ADMIN_REPO_NOT_SUPPORT_METHOD } from '#core/src/errors'
 
 export default abstract class Repository<T extends Repository<T>> {
   async paginate(_qs: Record<string, any>, _filters: Record<string, any>): Promise<any> {

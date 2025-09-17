@@ -1,8 +1,8 @@
-import Repository from '../repositories/repository.js'
-import Controller from '../controllers/controller.js'
-import { schema } from '../builder/index.js'
-import { QueryType } from '../types.js'
-import amis from '../builder/amis.js'
+import Repository from '#core/src/repositories/repository'
+import Controller from '#core/src/controllers/controller'
+import { schema } from '#core/src/builder/index'
+import { QueryType } from '#core/src/types'
+import amis from '#core/src/builder/amis'
 
 export default abstract class ResourceController extends Controller {
   protected showOperations = true

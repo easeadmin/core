@@ -1,6 +1,6 @@
-import Repository from 'easeadmin/repositories/repository'
-import parser from 'easeadmin/builder/parser'
-import amis from 'easeadmin/builder/amis'
+import Repository from '#core/src/repositories/repository'
+import parser from '#core/src/builder/parser'
+import amis from '#core/src/builder/amis'
 
 export default class BuilderRepository extends Repository<BuilderRepository> {
   code(data: Record<string, any>) {

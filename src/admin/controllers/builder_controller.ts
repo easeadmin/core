@@ -1,6 +1,6 @@
-import amis from 'easeadmin/builder/amis'
-import Controller from 'easeadmin/controllers/controller'
-import BuilderRepository from '../repositories/builder_repository.js'
+import amis from '#core/src/builder/amis'
+import Controller from '#core/src/controllers/controller'
+import BuilderRepository from '#core/src/admin/repositories/builder_repository'
 
 export default class BuilderController extends Controller {
   protected repository = new BuilderRepository()

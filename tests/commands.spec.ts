@@ -2,10 +2,10 @@ import { test } from '@japa/runner'
 import DbSeed from '@adonisjs/lucid/commands/db_seed'
 import Migrate from '@adonisjs/lucid/commands/migration/run'
 import Configure from '@adonisjs/core/commands/configure'
-import CreateCommand from '../commands/create.js'
-import InstallCommand from '../commands/install.js'
-import UninstallCommand from '../commands/uninstall.js'
-import { createApp, createDb, createAdminContext, createBaseFiles } from './utils.js'
+import CreateCommand from '#core/commands/create'
+import InstallCommand from '#core/commands/install'
+import UninstallCommand from '#core/commands/uninstall'
+import { createApp, createDb, createAdminContext, createBaseFiles } from '#core/tests/utils'
 
 test.group('Commands', async (group) => {
   group.each.disableTimeout()
@@ -15,7 +15,7 @@ test.group('Commands', async (group) => {
     await createBaseFiles()
 
     const ace = await app.container.make('ace')
-    const configureCommand = await ace.create(Configure, ['../../index.js', '--force'])
+    const configureCommand = await ace.create(Configure, ['#core/index', '--force'])
     await configureCommand.exec()
     configureCommand.assertSucceeded()
 
@@ -79,24 +79,11 @@ test.group('Commands', async (group) => {
     await assert.fileExists('app/admin/repositories/user_repository.ts')
 
     const ctrl = await fs.contents('app/admin/controllers/user_controller.ts')
-    await fs.create(
-      'app/admin/controllers/user_controller.ts',
-      ctrl
-        .replace('easeadmin/builder/amis', '../../../../../src/builder/amis.js')
-        .replace(
-          'easeadmin/controllers/resource_controller',
-          '../../../../../src/controllers/resource_controller.js'
-        )
-    )
+    await fs.create('app/admin/controllers/user_controller.ts', ctrl)
     const repo = await fs.contents('app/admin/repositories/user_repository.ts')
     await fs.create(
       'app/admin/repositories/user_repository.ts',
-      repo
-        .replace('#models/user', '../../models/user.js')
-        .replace(
-          'easeadmin/repositories/resource_repository',
-          '../../../../../src/repositories/resource_repository.js'
-        )
+      repo.replace('#models/user', '../../models/user.js')
     )
   })
 

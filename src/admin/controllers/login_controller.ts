@@ -1,8 +1,8 @@
 import { inject } from '@adonisjs/core'
 import { HttpContext } from '@adonisjs/core/http'
-import LoginRepository from '../repositories/login_repository.js'
-import Controller from '../../controllers/controller.js'
-import amis from '../../builder/amis.js'
+import LoginRepository from '#core/src/admin/repositories/login_repository'
+import Controller from '#core/src/controllers/controller'
+import amis from '#core/src/builder/amis'
 
 @inject()
 export default class LoginController extends Controller {

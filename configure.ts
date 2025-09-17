@@ -13,7 +13,7 @@
 */
 
 import ConfigureCommand from '@adonisjs/core/commands/configure'
-import { stubsRoot } from './stubs/main.js'
+import { stubsRoot } from '#core/stubs/main'
 import extract from 'extract-zip'
 import fs from 'node:fs'
 

@@ -93,7 +93,7 @@ export async function createBaseFiles() {
 
 export async function createAdminContext(app: any) {
   const ctx = new HttpContextFactory().create()
-  const Admin = await import('../src/admin/admin.js')
+  const Admin = await import('#core/src/admin/admin')
   const models = await app.import(`./app/models/admin.js`)
   ctx.admin = new Admin.default(ctx, 'admin', models)
   return ctx

@@ -1,7 +1,7 @@
 import { HttpContext } from '@adonisjs/core/http'
 import { inject } from '@adonisjs/core'
-import { QueryType } from '../../types.js'
-import ResourceRepository from '../../repositories/resource_repository.js'
+import { QueryType } from '#core/src/types'
+import ResourceRepository from '#core/src/repositories/resource_repository'
 
 @inject()
 export default class RoleRepository extends ResourceRepository {

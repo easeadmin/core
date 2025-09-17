@@ -13,7 +13,11 @@ export default class {{controllerName}} extends ResourceController {
   protected fields() {
     return [
 {{#each columns as item }}
+{{#if ['createdAt','updatedAt'].includes(item.name)}}
+      amis('column_item').name('{{item.name}}').label(this.ctx.admin.t('{{item.label}}')).type('datetime'),
+{{#else}}
       amis('column_item').name('{{item.name}}').label(this.ctx.admin.t('{{item.label}}')),
+{{/if}}
 {{/each}}
     ]
   }
@@ -21,9 +25,9 @@ export default class {{controllerName}} extends ResourceController {
   protected forms(isEdit: boolean) {
     return [
 {{#each columns as item }}
-{{#if ['id','createdAt','updatedAt'].includes(item.name)}}
-      amis('input_{{item.type}}').name('{{item.name}}').label(this.ctx.admin.t('{{item.label}}')).disabled(isEdit).permission(isEdit),
-{{#else}}
+{{#if item.name==='id'}}
+      amis('input_{{item.type}}').name('{{item.name}}').label(this.ctx.admin.t('{{item.label}}')).disabled(isEdit),
+{{#else if !['createdAt','updatedAt'].includes(item.name)}}
       amis('input_{{item.type}}').name('{{item.name}}').label(this.ctx.admin.t('{{item.label}}')),
 {{/if}}
 {{/each}}

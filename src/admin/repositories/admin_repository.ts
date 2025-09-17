@@ -1,13 +1,13 @@
 import { HttpContext } from '@adonisjs/core/http'
 import { inject } from '@adonisjs/core'
 import app from '@adonisjs/core/services/app'
-import Repository from '../../repositories/repository.js'
+import Repository from '#core/src/repositories/repository'
 
 import {
   E_ADMIN_INVALID_USER,
   E_ADMIN_INVALID_PASSWORD,
   E_ADMIN_INVALID_UPLOAD_FILE,
-} from '../../errors.js'
+} from '#core/src/errors'
 
 @inject()
 export default class AdminRepository extends Repository<AdminRepository> {
