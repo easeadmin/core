@@ -92,8 +92,8 @@ test.group('Commands', async (group) => {
     const ctx = await createAdminContext(app)
     await createDb(app)
 
-    const controlelrs = await app.import(`./app/admin/controllers/user_controller.js`)
-    const adminController = new controlelrs.default(ctx)
+    const controller = await app.import(`./app/admin/controllers/user_controller.js`)
+    const adminController = new controller.default(ctx)
     const result = await adminController.index()
     assert.isString(result)
   })

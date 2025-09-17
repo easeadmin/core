@@ -25,8 +25,25 @@ export class Start {
       const models = await app.import(`#models/${this.appname}`)
       ctx.admin = new Admin(ctx, this.appname, models)
       ctx.admin.switchLocale(ctx.admin.settings().lang)
-      await ctx.admin.authenticate()
-      await ctx.admin.permission()
+      if (ctx.admin.config.auth.guard.length > 0) {
+        if (ctx.admin.isExcept()) {
+          // slient auth
+          await (ctx as any).auth.use(ctx.admin.config.auth.guard).check()
+        } else {
+          // login auth
+          await (ctx as any).auth.authenticateUsing(ctx.admin.config.auth.guard, {
+            loginRoute: ctx.admin.url('auth_login.index'),
+          })
+        }
+        if (ctx.admin.user) {
+          await ctx.admin.user.load('roles')
+          for (let role of ctx.admin.user.roles) {
+            await role.load('menus')
+            await role.load('permissions')
+          }
+        }
+      }
+      ctx.admin.permission()
       return next()
     }
 

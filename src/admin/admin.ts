@@ -308,30 +308,12 @@ export default class Admin {
   }
 
   /**
-   * admin user authenticate
-   */
-  async authenticate() {
-    if (this.config.auth.guard.length > 0) {
-      let ctx = this.ctx as any
-      if (this.isExcept()) {
-        // slient auth
-        await ctx.auth.use(this.config.auth.guard).check()
-      } else {
-        // login auth
-        await ctx.auth.authenticateUsing(this.config.auth.guard, {
-          loginRoute: this.url('auth_login.index'),
-        })
-      }
-    }
-  }
-
-  /**
    * admin current request permission
    */
-  async permission() {
+  permission() {
     if (this.config.auth.permission) {
       if (!this.isExcept()) {
-        if ((await this.can(this.ctx.route?.name)) === false) {
+        if (this.can(this.ctx.route?.name) === false) {
           throw E_ADMIN_PERMISSION_DENIED
         }
       }
@@ -339,71 +321,10 @@ export default class Admin {
   }
 
   /**
-   * get current user roles
-   */
-  async getRoles() {
-    if (this.user) {
-      if (!this.user.roles) {
-        await this.user.load('roles')
-      }
-      return this.user.roles
-    }
-    return []
-  }
-
-  /**
-   * get current user menus
-   */
-  async getMenus() {
-    // user menus
-    let menus: Record<number, any> = {}
-    let roles = await this.getRoles()
-    for (let role of roles) {
-      if (!role.menus) {
-        await role.load('menus')
-      }
-      for (let menu of role.menus) {
-        menus[menu.id] = menu.toJSON()
-      }
-    }
-
-    // find parent
-    let all = this.flatArray(await this.models.Menu.all())
-    for (let i in menus) {
-      let parentId = menus[i]['parentId']
-      while (parentId) {
-        menus[parentId] = all[parentId]
-        parentId = all[parentId]['parentId']
-      }
-    }
-
-    let result = Object.values(menus)
-    result.sort((a, b) => a.order - b.order)
-    return result
-  }
-
-  /**
-   * get current user permissions
-   */
-  async getPermissions() {
-    let permissions: Record<number, any> = {}
-    let roles = await this.getRoles()
-    for (let role of roles) {
-      if (!role.permissions) {
-        await role.load('permissions')
-      }
-      for (let permission of role.permissions) {
-        permissions[permission.id] = permission
-      }
-    }
-    return Object.values(permissions)
-  }
-
-  /**
    * check current user is a role
    */
-  async isRole(slug: string) {
-    let roles = await this.getRoles()
+  isRole(slug: string) {
+    let roles = this.user.roles
     for (let role of roles) {
       if (role.slug === slug) {
         return true
@@ -415,9 +336,9 @@ export default class Admin {
   /**
    * check current user is roles
    */
-  async isAllRoles(slugs: string[]) {
+  isAllRoles(slugs: string[]) {
     for (let value of slugs) {
-      if (!(await this.isRole(value))) {
+      if (!this.isRole(value)) {
         return false
       }
     }
@@ -427,9 +348,9 @@ export default class Admin {
   /**
    * check current user has role
    */
-  async isAnyRoles(slugs: string[]) {
+  isAnyRoles(slugs: string[]) {
     for (let slug of slugs) {
-      if (await this.isRole(slug)) {
+      if (this.isRole(slug)) {
         return true
       }
     }
@@ -439,23 +360,30 @@ export default class Admin {
   /**
    * check current user is administrator
    */
-  async isAdministrator() {
+  isAdministrator() {
     if (this.user.id === 1) {
       return true
     }
-    return await this.isRole(Admin.SUPER_ADMIN_SLUG)
+    return this.isRole(Admin.SUPER_ADMIN_SLUG)
   }
 
   /**
    * check permission
    */
-  async can(slug?: string) {
+  can(slug?: string) {
     if (slug) {
-      if (await this.isAdministrator()) {
+      if (this.isAdministrator()) {
         return true
       } else {
-        let permissions = await this.getPermissions()
-        for (let item of permissions) {
+        let permissions: Record<number, any> = {}
+        let roles = this.user.roles
+        for (let role of roles) {
+          for (let permission of role.permissions) {
+            permissions[permission.id] = permission
+          }
+        }
+        let values = Object.values(permissions)
+        for (let item of values) {
           if (slug.indexOf(item.slug) === 0) {
             return true
           }

@@ -15,6 +15,9 @@ export default class AdminRepository extends Repository<AdminRepository> {
     super()
   }
 
+  /**
+   * menu item
+   */
   protected makeMenuItem(item: any) {
     let menu: Record<string, any> = {
       id: item.id,
@@ -41,6 +44,9 @@ export default class AdminRepository extends Repository<AdminRepository> {
     return menu
   }
 
+  /**
+   * scafold menus
+   */
   async developer() {
     return [
       {
@@ -71,10 +77,39 @@ export default class AdminRepository extends Repository<AdminRepository> {
   }
 
   /**
+   * get current user menus
+   */
+  protected async getMenus() {
+    // user menus
+    let menus: Record<number, any> = {}
+    let roles = this.ctx.admin.user.roles
+    for (let role of roles) {
+      for (let menu of role.menus) {
+        menus[menu.id] = menu.toJSON()
+      }
+    }
+
+    // find parent
+    const Menu = this.ctx.admin.model('Menu')
+    let all = this.ctx.admin.flatArray(await Menu.all())
+    for (let i in menus) {
+      let parentId = menus[i]['parentId']
+      while (parentId) {
+        menus[parentId] = all[parentId]
+        parentId = all[parentId]['parentId']
+      }
+    }
+
+    let result = Object.values(menus)
+    result.sort((a, b) => a.order - b.order)
+    return result
+  }
+
+  /**
    * menus tree
    */
   async trees(_qs: Record<string, any>, _filters: Record<string, any>) {
-    let result = await this.ctx.admin.getMenus()
+    let result = await this.getMenus()
     let menus = result.map((item) => this.makeMenuItem(item))
     let pages = this.ctx.admin.makeTree(menus, true)
     if (app.inDev) {
