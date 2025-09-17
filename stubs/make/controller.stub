@@ -27,7 +27,7 @@ export default class {{controllerName}} extends ResourceController {
 {{#each columns as item }}
 {{#if item.name==='id'}}
       amis('input_{{item.type}}').name('{{item.name}}').label(this.ctx.admin.t('{{item.label}}')).disabled(isEdit),
-{{#else if !['createdAt','updatedAt'].includes(item.name)}}
+{{#elif !['createdAt','updatedAt'].includes(item.name)}}
       amis('input_{{item.type}}').name('{{item.name}}').label(this.ctx.admin.t('{{item.label}}')),
 {{/if}}
 {{/each}}
