@@ -167,12 +167,13 @@ export default abstract class ResourceController extends Controller {
       amis('schema').type('filter-toggler').permission(this.showFilterToggler),
       amis('schema').type('bulkActions').permission(this.showBulkActions),
       amis('button')
+        .align('right')
+        .level('primary')
         .label(this.ctx.admin.t('create'))
+        .permission(this.showCreateButton)
         .dialog(
           amis('dialog').closeOnEsc(true).title(this.ctx.admin.t('create')).body(this.creator())
-        )
-        .align('right')
-        .level('primary'),
+        ),
     ]
   }
 
