@@ -48,6 +48,18 @@ export default abstract class ResourceController extends Controller {
     return keys
   }
 
+  protected getQuery(){
+    return this.ctx.request.qs()
+  }
+
+  protected getInput(isEdit:boolean = false){
+    return this.ctx.request.only(this.getForms(isEdit))
+  }
+
+  protected getParam(key:string){
+    return this.ctx.request.param(key)
+  }
+
   /**
    * build layout schema
    */
@@ -233,7 +245,7 @@ export default abstract class ResourceController extends Controller {
       return this.ok(this.builder().toJSON())
     }
 
-    const qs = this.ctx.request.qs()
+    const qs = this.getQuery()
     const filters = this.getFilters()
     if (this.ctx.admin.isApiAction('paginate')) {
       if ('trees' in this.repository) {
@@ -267,7 +279,7 @@ export default abstract class ResourceController extends Controller {
     if (this.ctx.admin.isApiAction('schema')) {
       return this.ok(this.editor())
     }
-    return this.ok(await this.repository.edit(this.ctx.request.param('id')))
+    return this.ok(await this.repository.edit(this.getParam('id')))
   }
 
   /**
@@ -277,37 +289,33 @@ export default abstract class ResourceController extends Controller {
     if (this.ctx.admin.isApiAction('schema')) {
       return this.ok(this.detail())
     }
-    return this.ok(await this.repository.show(this.ctx.request.param('id')))
+    return this.ok(await this.repository.show(this.getParam('id')))
   }
 
   /**
    * store api
    */
   async store(): Promise<any> {
-    let data = this.ctx.request.only(this.getForms())
-    return this.ok(await this.repository.store(data))
+    return this.ok(await this.repository.store(this.getInput(false)))
   }
 
   /**
    * update api
    */
   async update(): Promise<any> {
-    let id = this.ctx.request.param('id')
-    let data = this.ctx.request.only(this.getForms(true))
-    return this.ok(await this.repository.update(id, data))
+    return this.ok(await this.repository.update(this.getParam('id'), this.getInput(true)))
   }
 
   /**
    * delete api
    */
   async destroy(): Promise<any> {
-    let id = this.ctx.request.param('id')
     if (this.ctx.admin.isApiAction('forceDelete')) {
-      return this.ok(await this.repository.forceDelete(id))
+      return this.ok(await this.repository.forceDelete(this.getParam('id')))
     }
     if (this.ctx.admin.isApiAction('restore')) {
-      return this.ok(await this.repository.restore(id))
+      return this.ok(await this.repository.restore(this.getParam('id')))
     }
-    return this.ok(await this.repository.delete(id))
+    return this.ok(await this.repository.delete(this.getParam('id')))
   }
 }
