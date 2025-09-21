@@ -146,10 +146,13 @@ const ease = new (function () {
         theme = 'dark'
       }
     }
+    const bg = theme==='dark'? '#000' : '#FFF'
+    document.querySelector('#ease-loading').style.background = bg
     let link = document.createElement('link')
     link.href = jssdk(theme + '.css')
     link.rel = 'stylesheet'
     document.head.appendChild(link)
+    link.onload = () => document.querySelector('#ease-loading').style.display = 'none'
     return theme
   }
 

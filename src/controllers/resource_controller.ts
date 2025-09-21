@@ -48,15 +48,15 @@ export default abstract class ResourceController extends Controller {
     return keys
   }
 
-  protected getQuery(){
+  protected getQuery() {
     return this.ctx.request.qs()
   }
 
-  protected getInput(isEdit:boolean = false){
+  protected getInput(isEdit: boolean = false) {
     return this.ctx.request.only(this.getForms(isEdit))
   }
 
-  protected getParam(key:string){
+  protected getParam(key: string) {
     return this.ctx.request.param(key)
   }
 
