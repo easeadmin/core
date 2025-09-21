@@ -50,6 +50,13 @@ export default class Admin {
   }
 
   /**
+   * get http context
+   */
+  get context(){
+    return this.ctx
+  }
+
+  /**
    * get i18n lang
    */
   get lang() {
