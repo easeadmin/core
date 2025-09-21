@@ -52,7 +52,7 @@ export default class Admin {
   /**
    * get http context
    */
-  get context(){
+  get context() {
     return this.ctx
   }
 
