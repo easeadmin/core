@@ -20,6 +20,6 @@ export default class RoleRepository extends ResourceRepository {
       qs.type === 'menus' ? this.ctx.admin.model('Menu') : this.ctx.admin.model('Permission')
     const builder = this.queryBuilder(model.query(), qs, filters)
     let result = await builder.select('id', 'name', 'parentId')
-    return this.ctx.admin.makeTree(result)
+    return result.makeTree()
   }
 }

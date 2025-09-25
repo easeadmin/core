@@ -82,52 +82,6 @@ export default class Admin {
     return this.models[name]
   }
 
-  /**
-   * array to flat object
-   *
-   * @example
-   * flatArray([{id:1,name:'a'},{id:2,name:'b'}]) => {1:{id:1,name:'a'},2:{id:2,name:'b'}}
-   */
-  flatArray(items: any[], pk: string = 'id') {
-    let flats: Record<string, any> = {}
-    items.forEach((row) => {
-      let item = row.toJSON ? row.toJSON() : row
-      flats[item[pk]] = { ...item }
-    })
-    return flats
-  }
-
-  /**
-   * make to tree
-   *
-   * @example
-   * makeTree([{id:1,name:'a',parentId:0},{id:2,name:'b',parentId:1}]) => [{id:1,name:'a',children:[{id:2,name:'b'}]}]
-   */
-  makeTree(items: any[], clean: boolean = false, pk: string = 'id', parentKey = 'parentId') {
-    let trees: any[] = []
-    let flats = this.flatArray(items, pk)
-    for (let i in flats) {
-      if (flats[i][parentKey] < 1) {
-        trees.push(flats[i])
-      } else {
-        let parent = flats[flats[i][parentKey]]
-        if (parent) {
-          if (!parent.children) {
-            parent.children = []
-          }
-          parent.children.push(flats[i])
-        }
-      }
-    }
-    if (clean) {
-      for (let i in flats) {
-        delete flats[i][pk]
-        delete flats[i][parentKey]
-      }
-    }
-    return trees
-  }
-
   settings(data?: { lang?: string; theme?: string; darkness?: boolean }) {
     let settings = {
       lang: this.lang,

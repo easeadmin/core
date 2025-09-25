@@ -91,7 +91,8 @@ export default class AdminRepository extends Repository<AdminRepository> {
 
     // find parent
     const Menu = this.ctx.admin.model('Menu')
-    let all = this.ctx.admin.flatArray(await Menu.all())
+    const list = await Menu.all()
+    let all = list.flatKey('id')
     for (let i in menus) {
       let parentId = menus[i]['parentId']
       while (parentId) {
@@ -111,7 +112,7 @@ export default class AdminRepository extends Repository<AdminRepository> {
   async trees(_qs: Record<string, any>, _filters: Record<string, any>) {
     let result = await this.getMenus()
     let menus = result.map((item) => this.makeMenuItem(item))
-    let pages = this.ctx.admin.makeTree(menus, true)
+    let pages = menus.makeTree(true)
     if (app.inDev) {
       let developer = await this.developer()
       pages = pages.concat(developer)

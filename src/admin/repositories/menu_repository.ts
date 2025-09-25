@@ -15,7 +15,7 @@ export default class MenuRepository extends ResourceRepository {
   async trees(qs: Record<string, string> = {}, filters: Record<string, QueryType> = {}) {
     let builder = this.queryBuilder(this.model.query(), qs, filters)
     let result = await builder.orderBy('order', 'asc').select()
-    return this.ctx.admin.makeTree(result)
+    return result.makeTree()
   }
 
   async options(qs: Record<string, string> = {}, filters: Record<string, QueryType> = {}) {
@@ -32,6 +32,6 @@ export default class MenuRepository extends ResourceRepository {
     }
     let builder = this.queryBuilder(this.model.query(), qs, filters)
     let result = await builder.orderBy('order', 'asc').select('id', 'name', 'parentId')
-    return this.ctx.admin.makeTree(result)
+    return result.makeTree()
   }
 }
