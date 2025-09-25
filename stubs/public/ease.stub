@@ -248,7 +248,8 @@ const ease = new (function () {
     if (schema.type === 'app') {
       // log app referer
       if(definitions.urlmode === 'history'){
-        window.addEventListener('beforeunload', function () {
+        const ios = /iPad|iPhone|iPod/.test(navigator.userAgent);
+        window.addEventListener(ios ? 'pagehide' : 'beforeunload', function () {
           window.localStorage.setItem('referer', window.location.pathname)
         })
       }
