@@ -9,6 +9,55 @@ export class Start {
   protected registed: Record<string, Function> = {}
   constructor(protected appname: string) {
     this.registed = routes()
+    /**
+     * array to flat object
+     *
+     * @example
+     * flatArray([{id:1,name:'a'},{id:2,name:'b'}]) => {1:{id:1,name:'a'},2:{id:2,name:'b'}}
+     */
+    Array.prototype.flatKey = function (pk: string = 'id') {
+      let flats: Record<string, any> = {}
+      this.forEach((row) => {
+        let item = row.toJSON ? row.toJSON() : row
+        flats[item[pk]] = { ...item }
+      })
+      return flats
+    }
+
+    /**
+     * make to tree
+     *
+     * @example
+     * makeTree([{id:1,name:'a',parentId:0},{id:2,name:'b',parentId:1}]) => [{id:1,name:'a',children:[{id:2,name:'b'}]}]
+     */
+    Array.prototype.makeTree = function (
+      clean: boolean = false,
+      pk: string = 'id',
+      parentKey = 'parentId'
+    ) {
+      let trees: any[] = []
+      let flats = this.flatKey(pk)
+      for (let i in flats) {
+        if (flats[i][parentKey] < 1) {
+          trees.push(flats[i])
+        } else {
+          let parent = flats[flats[i][parentKey]]
+          if (parent) {
+            if (!parent.children) {
+              parent.children = []
+            }
+            parent.children.push(flats[i])
+          }
+        }
+      }
+      if (clean) {
+        for (let i in flats) {
+          delete flats[i][pk]
+          delete flats[i][parentKey]
+        }
+      }
+      return trees
+    }
   }
 
   static make(appname: string) {
@@ -71,54 +120,4 @@ declare global {
     flatKey(pk: string): Record<any, any>
     makeTree(clean?: boolean, pk?: string, parentKey?: string): any[]
   }
-}
-
-/**
- * array to flat object
- *
- * @example
- * flatArray([{id:1,name:'a'},{id:2,name:'b'}]) => {1:{id:1,name:'a'},2:{id:2,name:'b'}}
- */
-Array.prototype.flatKey = function (pk: string = 'id') {
-  let flats: Record<string, any> = {}
-  this.forEach((row) => {
-    let item = row.toJSON ? row.toJSON() : row
-    flats[item[pk]] = { ...item }
-  })
-  return flats
-}
-
-/**
- * make to tree
- *
- * @example
- * makeTree([{id:1,name:'a',parentId:0},{id:2,name:'b',parentId:1}]) => [{id:1,name:'a',children:[{id:2,name:'b'}]}]
- */
-Array.prototype.makeTree = function (
-  clean: boolean = false,
-  pk: string = 'id',
-  parentKey = 'parentId'
-) {
-  let trees: any[] = []
-  let flats = this.flatKey(pk)
-  for (let i in flats) {
-    if (flats[i][parentKey] < 1) {
-      trees.push(flats[i])
-    } else {
-      let parent = flats[flats[i][parentKey]]
-      if (parent) {
-        if (!parent.children) {
-          parent.children = []
-        }
-        parent.children.push(flats[i])
-      }
-    }
-  }
-  if (clean) {
-    for (let i in flats) {
-      delete flats[i][pk]
-      delete flats[i][parentKey]
-    }
-  }
-  return trees
 }
